@@ -34,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${bebasNeue.variable} ${inter.variable} ${notoSerif.variable} antialiased`}
+        className={`${bebasNeue.variable} ${inter.variable} ${notoSerif.variable} antialiased scroll-smooth`}
       >
         <LenisScroll />
         {children}
