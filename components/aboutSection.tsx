@@ -61,7 +61,7 @@ const AboutSection = () => {
                 <div className='w-[95%] mx-auto lg:w-[60%] z-0 text-center flex items-center justify-center flex-col mt-0'>
                     <div className='mb-6'>
                         <p className='about text-[12px] md:text-[14px] bg-[#DDE1E6] px-5 py-1 w-fit rounded-[3px] m-auto dark:text-black'>About</p>
-                        <h3 className='whoiam font-noto text-[66px] font-normal'>Who I Am</h3>
+                        <h3 className='whoiam font-noto text-[56px] md:text-[66px] font-normal'>Who I Am</h3>
                     </div>
 
                     <div>

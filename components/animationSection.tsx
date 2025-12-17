@@ -9,6 +9,8 @@ const AnimationSection = () => {
 
 
     useGSAP(() => {
+
+        
         gsap.fromTo('.anime', {
             y: 0,
             duration: 0.4,
@@ -25,7 +27,6 @@ const AnimationSection = () => {
             scrollTrigger: {
                 trigger: '.anime',
                 start: 'top 70%',
-                toggleActions: 'play none none reset',
             }
         });
 
@@ -46,7 +47,6 @@ const AnimationSection = () => {
             scrollTrigger: {
                 trigger:'.anime',
                 start: 'top 60%',
-                toggleActions: 'play none none reset',
 
             }
         })

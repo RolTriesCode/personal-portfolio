@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Bebas_Neue, Inter, Noto_Serif } from "next/font/google";
 import "./globals.css";
 import LenisScroll from "./lenisScroll";
-
+import { SmoothCursor } from "@/components/ui/smooth-cursor"
+import { ScrollProgress } from "@/components/ui/scroll-progress"
 const bebasNeue = Bebas_Neue({
   variable: "--font-bebas-neue",
   subsets: ["latin"],
@@ -34,6 +35,8 @@ export default function RootLayout({
       <body
         className={`${bebasNeue.variable} ${inter.variable} ${notoSerif.variable} antialiased scroll-smooth`}
       >
+        <ScrollProgress />
+        <SmoothCursor />
         <LenisScroll />
         {children}
       </body>
