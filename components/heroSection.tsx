@@ -1,34 +1,31 @@
-
 'use client'
-import { useRef, useEffect, useState } from 'react';
-import LogoLoop from '@/components/ui/LogoLoop';
-import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss } from 'react-icons/si';
-import Image from 'next/image';
-import gsap from 'gsap';
-import robot from '@/public/robot.png';
-import { useGSAP } from '@gsap/react';
+import robot from '@/public/robot.png'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
+import { ScrollTrigger, SplitText } from 'gsap/all'
+import Image from 'next/image'
+import { useRef } from 'react'
+import { SiNextdotjs, SiReact, SiTailwindcss, SiTypescript } from 'react-icons/si'
+import LogoLoop from './ui/LogoLoop'
 
-import {SplitText, ScrollTrigger} from 'gsap/all';
+gsap.registerPlugin(ScrollTrigger)
 
-const techLogos = [
-  { node: <SiReact />, title: "React", href: "https://react.dev" },
-  { node: <SiNextdotjs />, title: "Next.js", href: "https://nextjs.org" },
-  { node: <SiTypescript />, title: "TypeScript", href: "https://www.typescriptlang.org" },
-  { node: <SiTailwindcss />, title: "Tailwind CSS", href: "https://tailwindcss.com" },
-];
+const Scroll = () => {
+    const techLogos = [
+      { node: <SiReact />, title: "React", href: "https://react.dev" },
+      { node: <SiNextdotjs />, title: "Next.js", href: "https://nextjs.org" },
+      { node: <SiTypescript />, title: "TypeScript", href: "https://www.typescriptlang.org" },
+      { node: <SiTailwindcss />, title: "Tailwind CSS", href: "https://tailwindcss.com" },
+    ];
+  const robotRef = useRef(null)
 
-const HeroSection = () => {
-    const robotRef = useRef<HTMLDivElement>(null);
-
-    useGSAP(() => {
-    if (!robotRef.current) return;
+  useGSAP(() => {
 
 
     const heroSplit = new SplitText('.title', { type: 'chars' });
     const paragraphSplit = new SplitText('.subtitle', { type: 'lines' });
 
     heroSplit.chars.forEach(char => char.classList.add('text-gradient'));
-
 
     gsap.fromTo(heroSplit.chars, {
         opacity: 0,
@@ -39,7 +36,7 @@ const HeroSection = () => {
         duration: 1.8,
         ease: 'expo.out',
         stagger: 0.05,
-        delay: 3,   
+        delay: 1,   
     });
 
 
@@ -47,9 +44,9 @@ const HeroSection = () => {
         opacity:0,
     }, {
         opacity:1,
-        duration:0.8, 
-        delay:4,
-        ease:'power1.out'
+        duration:1, 
+        delay:2.5,
+        ease:'sine.in'
     })
 
     gsap.fromTo('.logosdiv', {
@@ -59,7 +56,7 @@ const HeroSection = () => {
     opacity: 1,
     xPercent: 0,
     duration: 1,
-    delay: 4,
+    delay: 2,
     ease: 'power1.out'
     });
 
@@ -69,91 +66,91 @@ const HeroSection = () => {
         yPercent: 100,
         duration: 1.8,
         ease: 'expo.out',
-        delay: 4,
+        delay: 2,
         stagger: 0.05,
     });
+    
 
-
-
-
-
-    const element = robotRef.current;
+  const element = robotRef.current;
     const tl = gsap.timeline({
-        defaults: { duration: 1.2, ease: 'power2.out' },
+      defaults: { duration: 1, ease: 'bounce.out' }, // bounce effect
     });
 
-    const rect = element.getBoundingClientRect();
-    const originalX = rect.left;
-    const originalY = rect.top;
+    tl.from(element, {
+        opacity:1,
+        y: -1000, // start 200px above // optional slight scale
+        duration: 1.2,
+        delay:0.1,
+        ease: 'bounce.out', // makes it bounce into place
+  });
 
-    const centerX = window.innerWidth / 2 - rect.width / 2;
-    const centerY = window.innerHeight / 2 - rect.height / 2;
-
-    tl.to(element, {
-        x: centerX - originalX,
-        y: centerY - originalY,
-        scale: 1.5,
-    }).to(element, {
-        x: 0,
-        y: -100,
-        delay: 0.1,
-        ease: 'sine.inOut',
-        scale: 1,
-
-    });
-
-
-
-
-    return () => tl.kill();
-    }, []);
-
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: "#home",
+        start: 'bottom bottom',
+        end: 'bottom top',
+        scrub: 0.5,
+      }
+    })
+    .fromTo(robotRef.current, 
+      { y: 0, x: 0, rotateY: 0 }, 
+      { y: 820, x: -650, rotateY: 180, ease: "none", scale: 0.90 }
+    );
+  })
 
   return (
-    <section id="home" className="hd h-screen flex flex-wrap">
-      <div className='w-screen lg:w-[50%] h-full flex justify-center items-center flex-col text-start'>
-          <div className='w-[90%] md:w-[70%] m-auto'>
-            <div className='logosdiv overflow-x-hidden w-[280px] bg-[#DDE1E6] pt-1 dark:text-black'>
-              <LogoLoop
-                logos={techLogos}
-                speed={30}
-                direction="right"
-                logoHeight={28}
-                gap={20}
-                hoverSpeed={0}
-                scaleOnHover
-                fadeOut
-                fadeOutColor="#ffffff"
-                ariaLabel="Technology partners"
-              />
-            </div>
-            <p className='subtitle text-[14px] md:text-[15px] text-[#676474] mt-2'>Full Stack Developer & UI/UX Designer</p>
+    <>
+    <section id='home' className="hd h-screen flex flex-wrap">
+        <div id='home' className="h-screen w-screen flex justify-center items-center perspective-[1000px]">
+            <div className='w-screen lg:w-[50%] h-full flex justify-center items-center flex-col text-start'>
+                <div className='w-[90%] md:w-[70%] m-auto'>
+                    <div className='logosdiv overflow-x-hidden w-[280px] bg-[#DDE1E6] pt-1 dark:text-black'>
+                    <LogoLoop
+                        logos={techLogos}
+                        speed={30}
+                        direction="right"
+                        logoHeight={28}
+                        gap={20}
+                        hoverSpeed={0}
+                        scaleOnHover
+                        fadeOut
+                        fadeOutColor="#ffffff"
+                        ariaLabel="Technology partners"
+                    />
+                    </div>
+                    <p className='subtitle text-[14px] md:text-[15px] text-[#676474] mt-2'>Full Stack Developer & UI/UX Designer</p>
 
-            <div className='leading-none mt-10 mb-4'>
-              <p className='title font-bebas text-[96px] md:text-[128px] tracking-wide whitespace-nowrap'>ERROL <br />TABANGEN</p>
+                    <div className='leading-none mt-10 mb-4'>
+                    <p className='title font-bebas text-[96px] md:text-[128px] tracking-wide whitespace-nowrap'>ERROL <br />TABANGEN</p>
+                    </div>
+
+                    <div>
+                    <button className='button bg-black cursor-pointer dark:bg-white text-white dark:text-black px-5 py-2 rounded-[5px] hover:bg-black/80 hover:scale-[0.96] duration-300 ease-in-out'>
+                        <a href="#contact">Hire Me</a>
+                    </button>
+                    </div>
+                </div>
+                
             </div>
 
-            <div>
-              <button className='button bg-black cursor-pointer dark:bg-white text-white dark:text-black px-5 py-2 rounded-[5px] hover:bg-black/80 hover:scale-[0.96] duration-300 ease-in-out'>
-                <a href="#contact">Hire Me</a>
-              </button>
+            <div className='w-screen lg:w-[50%] h-full flex justify-center items-center flex-col text-start'>
+                <div className='w-[90%] m-auto'>
+                <p className='subtitle text-[14px] md:text-[15px] text-[#676474] mt-2 hidden md:flex w-[300px]'>
+                    Crafting beautiful, functional, and user-centered digital experiences that solve real problems and delight users.
+                </p>
+                </div>
+                <div ref={robotRef} className='z-10 '>
+                <Image src={robot} alt='Robot' className='robo relative xl:-top-20'/>
+                </div>
             </div>
-          </div>
-        
-      </div>
-
-      <div className='w-screen lg:w-[50%] h-full flex justify-center items-center flex-col text-start'>
-        <div className='w-[90%] m-auto'>
-          <p className='subtitle text-[14px] md:text-[15px] text-[#676474] mt-2'>
-            Crafting beautiful, functional, and <br />user-centered digital experiences <br />that solve real problems and delight users.
-          </p>
         </div>
-        <div ref={robotRef}>
-          <Image src={robot} alt='Robot' className='robo relative 2xl:-top-20'/>
-        </div>
-      </div>
     </section>
+
+
+
+
+    </>
   )
 }
 
-export default HeroSection;
+export default Scroll
