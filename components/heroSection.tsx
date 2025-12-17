@@ -101,7 +101,7 @@ const Scroll = () => {
   return (
     <>
     <section id='home' className="hd h-screen flex flex-wrap">
-        <div id='home' className="h-screen w-screen flex justify-center items-center perspective-[1000px]">
+        <div id='home1' className="h-screen w-screen flex justify-center items-center perspective-[1000px]">
             <div className='w-screen lg:w-[50%] h-full flex justify-center items-center flex-col text-start'>
                 <div className='w-[90%] md:w-[70%] m-auto'>
                     <div className='logosdiv overflow-x-hidden w-[280px] bg-[#DDE1E6] pt-1 dark:text-black'>
