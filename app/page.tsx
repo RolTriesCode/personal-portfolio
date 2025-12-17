@@ -1,6 +1,7 @@
 import AboutSection from "@/components/aboutSection";
 import HeroSection from "@/components/heroSection";
 import NavBar from "@/components/navbar";
+import AnimationSection from "@/components/animationSection";
 import {
     ScrollVelocityContainer,
     ScrollVelocityRow,
@@ -25,6 +26,7 @@ export default function Home() {
             </ScrollVelocityRow>
         </ScrollVelocityContainer>
         <AboutSection />
+        <AnimationSection />
     </main>
   );
 }

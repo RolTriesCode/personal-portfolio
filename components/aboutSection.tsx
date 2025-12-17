@@ -8,7 +8,6 @@ const AboutSection = () => {
 
     useGSAP(() => {
 
-        // Animate the small "About" badge
         gsap.from('.about', {
             opacity: 0,
             y: 40,
@@ -22,7 +21,6 @@ const AboutSection = () => {
             }
         });
 
-        // Animate the "Who I Am" heading
         gsap.from('.whoiam', {
             opacity: 0,
             y: 50,
@@ -36,7 +34,7 @@ const AboutSection = () => {
         });
 
         const paragraphSplit = new SplitText('.aboutme', { type: 'lines' });
-        gsap.set(paragraphSplit.lines, { opacity: 0, y: 60 }); // start hidden and below
+        gsap.set(paragraphSplit.lines, { opacity: 0, y: 60 });
 
         paragraphSplit.lines.forEach(line => {
             gsap.to(line, {

@@ -73,15 +73,15 @@ const Scroll = () => {
 
   const element = robotRef.current;
     const tl = gsap.timeline({
-      defaults: { duration: 1, ease: 'bounce.out' }, // bounce effect
+      defaults: { duration: 1, ease: 'bounce.out' },
     });
 
     tl.from(element, {
         opacity:1,
-        y: -1000, // start 200px above // optional slight scale
+        y: -1000, 
         duration: 1.2,
         delay:0.1,
-        ease: 'bounce.out', // makes it bounce into place
+        ease: 'bounce.out', 
   });
 
     gsap.timeline({

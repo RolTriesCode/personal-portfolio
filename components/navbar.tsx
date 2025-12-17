@@ -11,18 +11,16 @@ const NavBar = () => {
   const headerRef = useRef<HTMLDivElement | null>(null)
   const isMobile = useMediaQuery({ maxWidth: 767 })
 
-  // Initial animation on mount
   useEffect(() => {
     if (headerRef.current) {
       gsap.fromTo(
         headerRef.current,
-        { opacity: 0, y: -20 }, // start hidden slightly above
-        { opacity: 1, y: 0, delay: 1, duration: 0.8, ease: "power2.out" } // appear after 0.5s
+        { opacity: 0, y: -20 }, 
+        { opacity: 1, y: 0, delay: 1, duration: 0.8, ease: "power2.out" } 
       )
     }
   }, [])
 
-  // Scroll animation
   useGSAP(() => {
     const handleScroll = () => {
       if (!headerRef.current) return

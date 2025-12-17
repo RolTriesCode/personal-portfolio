@@ -130,12 +130,7 @@ body {
   --sidebar-ring: oklch(0.556 0 0);
 }
 
-@utility text-gradient {
-    background: linear-gradient(to bottom, #ffffff, #898989);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-}
+
 
 @layer base {
   * {
