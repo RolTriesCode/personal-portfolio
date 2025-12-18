@@ -45,21 +45,21 @@ const NavBar = () => {
     >
       <div ref={headerRef} className="header w-[100%] flex items-center justify-between py-2 px-5 rounded-[99px] flex-wrap opacity-[1%]">
         <div>
-          <a href="#home">
+          <a href="#home" className='cursor-none'>
             <Image src={logo} alt="Logo" className="w-8 md:w-9 dark:invert-100"/>
           </a>
         </div>
 
         <nav className="flex items-center gap-4">
-          <ul className="flex items-center gap-4">
-            <li className="text-[14px] md:text-[15px] font-semibold"><a href="#home">Home</a></li>
-            <li className="text-[14px] md:text-[15px] font-semibold"><a href="#about">About</a></li>
-            <li className="text-[14px] md:text-[15px] font-semibold"><a href="#skill">Skills</a></li>
-            <li className="text-[14px] md:text-[15px] font-semibold"><a href="#project">Projects</a></li>
-            <li className="hidden md:block bg-black/90 dark:bg-white text-white dark:text-black px-3.5 py-1.5 rounded-[99px] text-[14px] md:text-[15px] font-semibold"><a href="#contact">Contact Me</a></li>
+          <ul className="flex items-center gap-4 ">
+            <li className="text-[14px] md:text-[15px] font-semibold "><a href="#home" className='cursor-none'>Home</a></li>
+            <li className="text-[14px] md:text-[15px] font-semibold "><a href="#about" className=' cursor-none'>About</a></li>
+            <li className="text-[14px] md:text-[15px] font-semibold "><a href="#skill" className=' cursor-none'>Skills</a></li>
+            <li className="text-[14px] md:text-[15px] font-semibold "><a href="#project" className=' cursor-none'>Projects</a></li>
+            <li className="hidden md:block bg-black/90 dark:bg-white  text-white dark:text-black px-3.5 py-1.5 rounded-[99px] text-[14px] md:text-[15px] font-semibold"><a href="#contact" className='cursor-none'>Contact Me</a></li>
           </ul>
           <div className="relative top-0.5">
-            <AnimatedThemeToggler />
+            <AnimatedThemeToggler className='cursor-none active:cursor-none'/>
           </div>
         </nav>
       </div>

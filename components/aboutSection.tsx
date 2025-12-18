@@ -11,7 +11,7 @@ const AboutSection = () => {
         gsap.from('.about', {
             opacity: 0,
             y: 40,
-            duration: 0.2,
+            duration: 1.5,
             scrub: true,
             ease: 'power2.out',
             scrollTrigger: {
@@ -24,7 +24,7 @@ const AboutSection = () => {
         gsap.from('.whoiam', {
             opacity: 0,
             y: 50,
-            duration: 1,
+            duration: 1.5,
             ease: 'power2.out',
             scrollTrigger: {
                 trigger: '.whoiam',
@@ -33,14 +33,14 @@ const AboutSection = () => {
             }
         });
 
-        const paragraphSplit = new SplitText('.aboutme', { type: 'lines' });
-        gsap.set(paragraphSplit.lines, { opacity: 0, y: 60 });
+        const paragraphSplit = new SplitText('.aboutme', { type: 'words' });
+        gsap.set(paragraphSplit.words, { opacity: 0, y: 60 });
 
-        paragraphSplit.lines.forEach(line => {
+        paragraphSplit.words.forEach(line => {
             gsap.to(line, {
                 opacity: 1,
                 y: 0,
-                duration: 1,
+                duration: 1.5,
                 scrub: true,
                 ease: 'expo.out',
                 scrollTrigger: {
@@ -65,7 +65,7 @@ const AboutSection = () => {
                     </div>
 
                     <div>
-                    <p className='aboutme text-justify px-2 w-[100%] lg:w-[95%] 2xl:w-[100%]  m-auto text-[14px] md:text-[15px] text-[#676474]'>
+                    <p className='aboutme text-justify px-2 w-[100%] lg:w-[80%] 2xl:w-[100%]  m-auto text-[14px] md:text-[15px] text-[#676474]'>
                     I’m Errol — a full-stack developer and builder of interfaces with a passion for crafting intuitive, user-friendly digital experiences. I bridge the gap between design and development, turning ideas into functional, engaging interfaces.
 
                     <br /><br />

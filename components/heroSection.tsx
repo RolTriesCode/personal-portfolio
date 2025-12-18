@@ -105,7 +105,7 @@ const Scroll = () => {
             <div className='w-screen lg:w-[50%] h-full flex justify-center items-center flex-col text-start'>
                 <div className='w-[90%] md:w-[70%] m-auto'>
                     <div className='logosdiv overflow-x-hidden w-[280px] bg-[#DDE1E6] pt-1 dark:text-black'>
-                    <LogoLoop
+                    <LogoLoop 
                         logos={techLogos}
                         speed={30}
                         direction="right"
@@ -124,12 +124,45 @@ const Scroll = () => {
                     <p className='title font-bebas text-[96px] md:text-[128px] tracking-wide whitespace-nowrap'>ERROL <br />TABANGEN</p>
                     </div>
 
-                    <div className='flex items-center gap-4'>
-                      <button className='button bg-black cursor-pointer dark:bg-white text-white dark:text-black px-5 py-2 rounded-[5px] hover:bg-black/80 hover:scale-[0.96] duration-300 ease-in-out'>
-                          <a href="#contact">Hire Me</a>
+                    <div className='flex items-center flex-row gap-6'>
+                      <button
+                      className="button cursor-none group relative bg-black text-white dark:bg-white active:scale-85 dark:text-black font-semibold text-sm px-2 py-3 rounded-[5px] transition-all duration-200 ease-in-out shadow hover:shadow-lg w-40 h-12"
+                      >
+                        <a href="#contact" className='cursor-none'>
+                        <div className="relative flex items-center justify-center gap-5 ">
+                            <span className="relative inline-block overflow-hidden">
+                            <span
+                                className="block transition-transform duration-300 group-hover:-translate-y-full"
+                            >
+                              Hire Me
+                                
+                            </span>
+                            <span
+                                className="absolute inset-0 transition-transform duration-300 translate-y-full group-hover:translate-y-0"
+                            >
+                                Contact
+                            </span>
+                            </span>
+
+                            <svg
+                            className="w-4 h-4 transition-transform duration-200 group-hover:rotate-45 text-black "
+                            viewBox="0 0 24 24"
+                            >
+                            <circle fill="currentColor" r="11" cy="12" cx="12"></circle>
+                            <path
+                                strokeLinejoin="round"
+                                strokeLinecap="round"
+                                strokeWidth="2"
+                                stroke="white"
+                                d="M7.5 16.5L16.5 7.5M16.5 7.5H10.5M16.5 7.5V13.5"
+                            ></path>
+                            </svg>
+                        </div>
+                        </a>
+
                       </button>
-                      <button className='button'>
-                          <a href="">Resume</a>
+                      <button className='button cursor-none'>
+                          <a href="" className='cursor-none'>Resume</a>
                       </button>
                     </div>
                 </div>
