@@ -4,6 +4,8 @@ import NavBar from "@/components/navbar";
 import AnimationSection from "@/components/animationSection";
 import SkillSection from "@/components/skillSection";
 import ProjectSection from "@/components/projectSection";
+import ContactSection from "@/components/contactSection";
+
 import {
     ScrollVelocityContainer,
     ScrollVelocityRow,
@@ -16,7 +18,7 @@ gsap.registerPlugin(ScrollTrigger, SplitText)
 
 export default function Home() {
   return (
-    <main className="h-[10000px] relative 2xl:w-[63%] m-auto">
+    <main className=" relative 2xl:w-[63%] m-auto">
         <NavBar />
         <HeroSection />
         <ScrollVelocityContainer className="text-4xl font-bold md:text-7xl -z-10">
@@ -31,6 +33,7 @@ export default function Home() {
         <AnimationSection />
         <SkillSection />
         <ProjectSection />
+        <ContactSection />
     </main>
   );
 }

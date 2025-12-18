@@ -59,7 +59,7 @@ const ProjectCard = ({ src, title, description }: any) => (
 
 const ProjectSection = () => {
   return (
-    <section id="project" className="mt-300 md:mt-300 lg:mt-200">
+    <section id="project" className="mt-300 md:mt-300 lg:mt-200 mb-50">
        <div className="flex items-center justify-center flex-col">
             <p className='skilltext text-[12px] md:text-[14px] bg-[#DDE1E6] px-5 py-1 w-fit rounded-[3px] dark:text-black'>
                 Latest Projects
