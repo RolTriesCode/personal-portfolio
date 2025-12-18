@@ -1,8 +1,8 @@
 
 const ContactSection = () => {
   return (
-    <section id="contact" className="lg:h-screen flex flex-wrap-reverse items-center ">
-        <div className="w-[90%] lg:w-[50%] h-screen mx-auto flex flex-col gap-y-18 lg:pt-20 lg:px-20">   
+    <section id="contact" className="lg:h-fit flex flex-wrap-reverse items-center mb-50">
+        <div className="w-[90%] lg:w-[50%] mx-auto flex flex-col gap-y-18 lg:pt-20 lg:px-20">   
             <div className="flex flex-row items-center gap-6">
                 <div>
                     <svg xmlns="http://www.w3.org/2000/svg" width="31" height="31" viewBox="0 0 24 24">
@@ -43,7 +43,7 @@ const ContactSection = () => {
                         </a>
                         <a href="" className="group">
                             <svg className="group-hover:scale-105 duration-150 ease-linear transition-all" xmlns="http://www.w3.org/2000/svg" width="31" height="31" viewBox="0 0 24 24">
-                                <path fill="currentColor" fill-rule="evenodd" d="M5 1a4 4 0 0 0-4 4v14a4 4 0 0 0 4 4h14a4 4 0 0 0 4-4V5a4 4 0 0 0-4-4zm1.205 6.91a1.705 1.705 0 1 0 0-3.41a1.705 1.705 0 0 0 0 3.41M7.909 19.5V9.273H4.5V19.5h3.41Zm4.432-10.227H9.273V19.5h3.068v-6.17c.395-.642 1.077-1.33 2.045-1.33c1.364 0 1.705 1.364 1.705 2.046V19.5H19.5v-5.454c0-1.828-.797-4.773-3.75-4.773c-1.878 0-2.92.685-3.41 1.327z" clip-rule="evenodd" />
+                                <path fill="currentColor" fillRule="evenodd" d="M5 1a4 4 0 0 0-4 4v14a4 4 0 0 0 4 4h14a4 4 0 0 0 4-4V5a4 4 0 0 0-4-4zm1.205 6.91a1.705 1.705 0 1 0 0-3.41a1.705 1.705 0 0 0 0 3.41M7.909 19.5V9.273H4.5V19.5h3.41Zm4.432-10.227H9.273V19.5h3.068v-6.17c.395-.642 1.077-1.33 2.045-1.33c1.364 0 1.705 1.364 1.705 2.046V19.5H19.5v-5.454c0-1.828-.797-4.773-3.75-4.773c-1.878 0-2.92.685-3.41 1.327z" clipRule="evenodd" />
                             </svg>
                         </a>
                         <a href="" className="group">
@@ -60,7 +60,7 @@ const ContactSection = () => {
             <div className="flex flex-row items-center gap-6">
                 <div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="31" height="31" viewBox="0 0 512 512">
-                    <path fill="currentColor" fill-rule="evenodd" d="M362.667 128Q384 192 384 256t-21.333 128L244.81 354.536c-3.844 28.68-28.41 50.797-58.143 50.797c-31.2 0-56.713-24.356-58.56-55.093l-.107-3.573v-18.134L42.667 320V192l106.667-10.667zm-192 208v10.667c0 8.836 7.163 16 16 16c8.1 0 14.794-6.02 15.854-13.83l.146-2.17V344zm162.048-156.544l-162.048 40.523v72.04l162.048 40.504l.879-3.783c4.429-20.84 6.952-41.622 7.582-62.369l.158-10.371c0-24.193-2.573-48.426-7.74-72.74zM128 226.346l-42.666 4.267v50.752L128 285.644zm277.334 8.32h64v42.667h-64zm-3.403 72.532l62.36 14.397l-9.598 41.573l-62.36-14.397zm-9.598-143.969l62.36-14.397l9.598 41.573l-62.36 14.397z" />
+                    <path fill="currentColor" fillRule="evenodd" d="M362.667 128Q384 192 384 256t-21.333 128L244.81 354.536c-3.844 28.68-28.41 50.797-58.143 50.797c-31.2 0-56.713-24.356-58.56-55.093l-.107-3.573v-18.134L42.667 320V192l106.667-10.667zm-192 208v10.667c0 8.836 7.163 16 16 16c8.1 0 14.794-6.02 15.854-13.83l.146-2.17V344zm162.048-156.544l-162.048 40.523v72.04l162.048 40.504l.879-3.783c4.429-20.84 6.952-41.622 7.582-62.369l.158-10.371c0-24.193-2.573-48.426-7.74-72.74zM128 226.346l-42.666 4.267v50.752L128 285.644zm277.334 8.32h64v42.667h-64zm-3.403 72.532l62.36 14.397l-9.598 41.573l-62.36-14.397zm-9.598-143.969l62.36-14.397l9.598 41.573l-62.36 14.397z" />
                 </svg>
                 </div>
                 <div>
@@ -72,7 +72,7 @@ const ContactSection = () => {
 
         </div>
 
-        <div className="w-[90%] lg:w-[50%] h-fit mb-40 lg:mb-0 lg:h-screen mx-auto">   
+        <div className="w-[90%] lg:w-[50%] h-fit mb-40 lg:mb-0  mx-auto">   
             <div className="flex flex-col items-center">
                 <p className='skilltext text-[12px] md:text-[14px] bg-[#DDE1E6] px-5 py-1 w-fit rounded-[3px] dark:text-black'>
                     Contact
@@ -176,9 +176,9 @@ const ContactSection = () => {
                     >
                     <circle fill="currentColor" r="11" cy="12" cx="12"></circle>
                     <path
-                        stroke-linejoin="round"
-                        stroke-linecap="round"
-                        stroke-width="2"
+                        strokeLinejoin="round"
+                        strokeLinecap="round"
+                        strokeWidth="2"
                         stroke="white"
                         d="M7.5 16.5L16.5 7.5M16.5 7.5H10.5M16.5 7.5V13.5"
                     ></path>

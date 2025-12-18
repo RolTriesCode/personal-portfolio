@@ -5,6 +5,7 @@ import AnimationSection from "@/components/animationSection";
 import SkillSection from "@/components/skillSection";
 import ProjectSection from "@/components/projectSection";
 import ContactSection from "@/components/contactSection";
+import Footer from "@/components/footerSection";
 
 import {
     ScrollVelocityContainer,
@@ -34,6 +35,7 @@ export default function Home() {
         <SkillSection />
         <ProjectSection />
         <ContactSection />
+        <Footer />
     </main>
   );
 }
