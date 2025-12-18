@@ -36,10 +36,15 @@ export default function RootLayout({
         className={`${bebasNeue.variable} ${inter.variable} ${notoSerif.variable} antialiased scroll-smooth`}
       >
         <ScrollProgress />
-        <SmoothCursor />
+        
+
         <LenisScroll />
         {children}
       </body>
     </html>
   );
 }
+// bring back later 
+/**
+ *         <SmoothCursor />
+ */

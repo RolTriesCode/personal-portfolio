@@ -40,7 +40,7 @@ const Scroll = () => {
     });
 
 
-    gsap.fromTo('button', {
+    gsap.fromTo('.button', {
         opacity:0,
     }, {
         opacity:1,
@@ -124,10 +124,13 @@ const Scroll = () => {
                     <p className='title font-bebas text-[96px] md:text-[128px] tracking-wide whitespace-nowrap'>ERROL <br />TABANGEN</p>
                     </div>
 
-                    <div>
-                    <button className='button bg-black cursor-pointer dark:bg-white text-white dark:text-black px-5 py-2 rounded-[5px] hover:bg-black/80 hover:scale-[0.96] duration-300 ease-in-out'>
-                        <a href="#contact">Hire Me</a>
-                    </button>
+                    <div className='flex items-center gap-4'>
+                      <button className='button bg-black cursor-pointer dark:bg-white text-white dark:text-black px-5 py-2 rounded-[5px] hover:bg-black/80 hover:scale-[0.96] duration-300 ease-in-out'>
+                          <a href="#contact">Hire Me</a>
+                      </button>
+                      <button className='button'>
+                          <a href="">Resume</a>
+                      </button>
                     </div>
                 </div>
                 

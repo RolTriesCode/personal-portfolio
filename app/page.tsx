@@ -3,6 +3,7 @@ import HeroSection from "@/components/heroSection";
 import NavBar from "@/components/navbar";
 import AnimationSection from "@/components/animationSection";
 import SkillSection from "@/components/skillSection";
+import ProjectSection from "@/components/projectSection";
 import {
     ScrollVelocityContainer,
     ScrollVelocityRow,
@@ -29,6 +30,7 @@ export default function Home() {
         <AboutSection />
         <AnimationSection />
         <SkillSection />
+        <ProjectSection />
     </main>
   );
 }
