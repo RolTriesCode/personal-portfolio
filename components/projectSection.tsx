@@ -72,11 +72,11 @@ const ProjectSection = () => {
             x: 0,   
             opacity: 1,
             duration: 1,
-            delay:0.2,
+            delay:0.6,
             ease: 'power1.out',
             scrollTrigger: {
               trigger: '.proj1',
-              start: 'top 80%',
+              start: 'top 50%',
             },
           }
         );
@@ -87,11 +87,11 @@ const ProjectSection = () => {
             x: 0, 
             opacity: 1,
             duration: 1,
-            delay:0.4,
+            delay:0.8,
             ease: 'power1.out',
             scrollTrigger: {
               trigger: '.proj2',
-              start: 'top 70%',
+              start: 'top 30%',
             },
           }
         );
@@ -102,11 +102,11 @@ const ProjectSection = () => {
             x: 0, 
             opacity: 1,
             duration: 1,
-            delay:0.6,
+            delay:1,
             ease: 'power1.out',
             scrollTrigger: {
               trigger: '.proj3',
-              start: 'top 60%',
+              start: 'top 70%',
             },
           }
         );
@@ -117,11 +117,11 @@ const ProjectSection = () => {
             x: 0, 
             opacity: 1,
             duration: 1,
-            delay:0.8,
+            delay:1.2,
             ease: 'power1.out',
             scrollTrigger: {
               trigger: '.proj4',
-              start: 'top 50%',
+              start: 'top 40%',
             },
           }
         );
@@ -179,12 +179,12 @@ const ProjectSection = () => {
                 </div>
 
             </div>
-            <div className="flex flex-wrap md:flex-nowrap gap-10  w-[90%] mx-auto">
+            <div className="flex flex-wrap md:flex-nowrap gap-4 md:gap-10 w-[90%] mx-auto">
 
                 <div className="proj3 mt-4 md:mt-14 lg:mt-20 md:w-[63.5%] lg:w-[64%]">
                     <ProjectCard {...projects[2]} />
                 </div>
-                <div className="proj4 w-[100%] md:w-[36.5%] lg:w-[36%]">
+                <div className="proj4 w-[100%] md:w-[36.5%] lg:w-[36%] lg:mt-0">
                     <ProjectCard {...projects[3]} />
                 </div>
 

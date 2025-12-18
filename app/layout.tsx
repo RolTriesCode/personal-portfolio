@@ -37,7 +37,10 @@ export default function RootLayout({
       >
         <ScrollProgress />
 
+<div className="hidden lg:flex">
         <SmoothCursor />  
+
+</div>
 
         <LenisScroll />
         {children}
