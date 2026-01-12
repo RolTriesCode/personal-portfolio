@@ -61,7 +61,7 @@ function ChatButton() {
         <div className="fixed bottom-6 right-6 z-50">
             {/* Chat Window */}
             {isOpen && (
-                <div className="absolute bottom-16 right-0 w-[350px] md:w-[400px] h-[500px] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden transition-all duration-300 transform origin-bottom-right scale-100 opacity-100">
+                <div className="absolute bottom-16 right-0 w-[350px] md:w-[400px] h-[500px] bg-white rounded-[10px] shadow-2xl border border-gray-200 flex flex-col overflow-hidden transition-all duration-300 transform origin-bottom-right scale-100 opacity-100">
                     {/* Header */}
                     <div className="bg-[#222222] text-white p-4 flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -72,7 +72,7 @@ function ChatButton() {
                                 <h3 className="font-semibold text-[14px]">Errol Tabangen</h3>
                                 <div className="flex items-center gap-1">
                                     <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                                    <span className="text-[12px] text-gray-300">Online Assistant</span>
+                                    <span className="text-[12px] text-gray-300">Online</span>
                                 </div>
                             </div>
                         </div>
@@ -119,7 +119,7 @@ function ChatButton() {
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
                                 placeholder="Type a message..."
-                                className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#222222] transition-all cursor-none"
+                                className="flex-1 bg-gray-100 rounded-[6px] px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#222222] transition-all cursor-none dark:placeholder:text-gray-400"
                             />
                             <button
                                 onClick={handleSend}

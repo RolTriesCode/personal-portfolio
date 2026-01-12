@@ -15,8 +15,8 @@ const NavBar = () => {
     if (headerRef.current) {
       gsap.fromTo(
         headerRef.current,
-        { opacity: 0, y: -20 }, 
-        { opacity: 1, y: 0, delay: 1, duration: 0.8, ease: "power2.out" } 
+        { opacity: 0, y: -20 },
+        { opacity: 1, y: 0, delay: 1, duration: 0.8, ease: "power2.out" }
       )
     }
   }, [])
@@ -28,7 +28,7 @@ const NavBar = () => {
       const width = window.scrollY > 50 ? (isMobile ? '90%' : '60%') : '100%'
 
       gsap.to(headerRef.current, {
-        backgroundColor: window.scrollY > 50 ? '#DDE1E6' : 'transparent',
+        backgroundColor: window.scrollY > 50 ? '#f3f4f6 dark:bg-black' : 'transparent',
         width: width,
         duration: 0.8,
         ease: 'sine.out',
@@ -40,13 +40,13 @@ const NavBar = () => {
   }, [isMobile])
 
   return (
-    <header 
+    <header
       className="fixed top-0 left-0 right-0 flex items-center justify-evenly z-50 w-full py-3"
     >
       <div ref={headerRef} className="header w-[100%] flex items-center justify-between py-2 px-5 rounded-[99px] flex-wrap opacity-[1%]">
         <div>
           <a href="#home" className='cursor-none'>
-            <Image src={logo} alt="Logo" className="w-8 md:w-9 dark:invert-100"/>
+            <Image src={logo} alt="Logo" className="w-8 md:w-9 dark:invert-100" />
           </a>
         </div>
 
@@ -59,7 +59,7 @@ const NavBar = () => {
             <li className="hidden md:block bg-black/90 dark:bg-white  text-white dark:text-black px-3.5 py-1.5 rounded-[99px] text-[14px] md:text-[15px] font-semibold"><a href="#contact" className='cursor-none'>Contact Me</a></li>
           </ul>
           <div className="relative top-0.5">
-            <AnimatedThemeToggler className='cursor-none active:cursor-none'/>
+            <AnimatedThemeToggler className='cursor-none active:cursor-none' />
           </div>
         </nav>
       </div>
