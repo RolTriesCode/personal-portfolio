@@ -5,8 +5,65 @@ import gsap from "gsap";
 import pfp from '@/public/threedblack.png'
 import Image from "next/image";
 import defaultpfp from '@/public/image.png'
+import { useState } from "react";
+import SuccessModal from "./SuccessModal";
 
 const ContactSection = () => {
+    const [formData, setFormData] = useState({
+        username: '',
+        email: '',
+        message: ''
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSuccessOpen, setIsSuccessOpen] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+        if (error) setError(null);
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // Basic validation
+        if (!formData.username || !formData.email || !formData.message) {
+            setError('Please fill out all fields.');
+            return;
+        }
+
+        setIsSubmitting(true);
+        setError(null);
+
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: formData.username,
+                    email: formData.email,
+                    message: formData.message
+                }),
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.error || 'Failed to send message');
+            }
+
+            // Success
+            setIsSuccessOpen(true);
+            // We clear the form, but let's keep the name for the modal if needed
+            // Actually, the SuccessModal receives the current formData.username
+            // If we clear it now, it will be empty in the modal.
+            // Let's clear it when the modal is closed or use a temporary state.
+        } catch (err: any) {
+            setError(err.message || 'Something went wrong. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     useGSAP(() => {
         gsap.from('.skilltext12', {
@@ -43,15 +100,7 @@ const ContactSection = () => {
                 }
             });
         });
-
-
-
-
-
-
     })
-
-
 
     return (
         <section id="contact" className="lg:h-fit flex flex-wrap-reverse items-center mb-50">
@@ -146,7 +195,7 @@ const ContactSection = () => {
                 </div>
 
 
-                <div className="px-4 lg:px-20 mt-14 flex flex-col gap-18">
+                <form onSubmit={handleSubmit} className="px-4 lg:px-20 mt-14 flex flex-col gap-18">
 
                     <div className="">
                         <div className="flex items-center justify-center">
@@ -156,6 +205,8 @@ const ContactSection = () => {
                                     name="username"
                                     type="text"
                                     placeholder=""
+                                    value={formData.username}
+                                    onChange={handleChange}
                                     className="border-b cursor-none  border-black/20 dark:border-gray-400 py-1 focus:border-b focus:border-black dark:focus:border-white transition-colors focus:outline-none peer bg-inherit w-full"
                                 />
                                 <label
@@ -179,6 +230,8 @@ const ContactSection = () => {
                                     name="email"
                                     type="email"
                                     placeholder=""
+                                    value={formData.email}
+                                    onChange={handleChange}
                                     className="border-b cursor-none  border-black/20 dark:border-gray-400 py-1 focus:border-b focus:border-black dark:focus:border-white transition-colors focus:outline-none peer bg-inherit w-full"
                                 />
                                 <label
@@ -202,6 +255,8 @@ const ContactSection = () => {
                                     name="message"
                                     type="text"
                                     placeholder=""
+                                    value={formData.message}
+                                    onChange={handleChange}
                                     className="border-b cursor-none  border-black/20 dark:border-gray-400 py-1 focus:border-b focus:border-black dark:focus:border-white transition-colors focus:outline-none peer bg-inherit w-full"
                                 />
                                 <label
@@ -214,17 +269,21 @@ const ContactSection = () => {
                         </div>
                     </div>
 
-
+                    {error && (
+                        <p className="text-red-500 text-xs mt-2">{error}</p>
+                    )}
 
                     <button
-                        className="cursor-none group relative bg-black text-white dark:bg-white active:scale-85 dark:text-black font-semibold text-sm px-6 py-3 rounded-[5px] transition-all duration-200 ease-in-out shadow hover:shadow-lg w-40 h-12"
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="cursor-none group relative bg-black text-white dark:bg-white active:scale-85 dark:text-black font-semibold text-sm px-6 py-3 rounded-[5px] transition-all duration-200 ease-in-out shadow hover:shadow-lg w-40 h-12 disabled:opacity-50"
                     >
                         <div className="relative flex items-center justify-center gap-5 ">
                             <span className="relative inline-block overflow-hidden">
                                 <span
                                     className="block transition-transform duration-300 group-hover:-translate-y-full"
                                 >
-                                    Ready?
+                                    {isSubmitting ? 'Sending...' : 'Ready?'}
                                 </span>
                                 <span
                                     className="absolute inset-0 transition-transform duration-300 translate-y-full group-hover:translate-y-0"
@@ -249,8 +308,16 @@ const ContactSection = () => {
                         </div>
                     </button>
 
-                </div>
+                </form>
             </div>
+            <SuccessModal
+                isOpen={isSuccessOpen}
+                onClose={() => {
+                    setIsSuccessOpen(false);
+                    setFormData({ username: '', email: '', message: '' });
+                }}
+                userName={formData.username || 'Friend'}
+            />
         </section>
     )
 }
