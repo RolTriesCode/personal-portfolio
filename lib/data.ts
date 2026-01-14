@@ -5,13 +5,7 @@ import mojita from '@/public/mojita.jpg'
 import flameAble from '@/public/flameAble.png'
 
 export const projects = [
-    {
-        src: vigEnture,
-        title: "Blogify",
-        description: "A comprehensive blog platform designed for modern explorers. Features real-time tracking and community sharing. And has AI post generation",
-        tech: ["Next.js", "React", "Tailwind CSS", "Firebase", "OpenAI"],
-        year: "2025"
-    },
+
     {
         src: vigEnture,
         title: "VigEnture",
