@@ -1,40 +1,10 @@
-
-
 'use client'
+import { projects } from "@/lib/data"
 import Image from "next/image"
-import vigEnture from '@/public/vigEnture.jpg'
-import ignis from '@/public/ignis.jpg'
-import mojita from '@/public/mojita.jpg'
-import flameAble from '@/public/flameAble.png'
 import gsap from "gsap"
 import { useGSAP } from "@gsap/react"
 import Link from "next/link"
 
-
-
-
-const projects = [
-  {
-    src: vigEnture,
-    title: "VigEnture",
-    description: "A project about venture tracking."
-  },
-  {
-    src: ignis,
-    title: "Ignis",
-    description: "An innovative web application."
-  },
-  {
-    src: mojita,
-    title: "Mojita",
-    description: "A refreshing cocktail app."
-  },
-  {
-    src: flameAble,
-    title: "FlameAble",
-    description: "A creative flame-themed app."
-  }
-];
 
 
 const ProjectCard = ({ src, title, description }: any) => (

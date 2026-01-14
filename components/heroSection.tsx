@@ -8,9 +8,14 @@ import { useRef } from 'react'
 import { SiNextdotjs, SiReact, SiTailwindcss, SiTypescript } from 'react-icons/si'
 import LogoLoop from './ui/LogoLoop'
 
+import { useState } from 'react'
+import ResumeModal from './ResumeModal'
+
+
 gsap.registerPlugin(ScrollTrigger)
 
 const Scroll = () => {
+  const [isResumeOpen, setIsResumeOpen] = useState(false)
   const techLogos = [
     { node: <SiReact />, title: "React", href: "https://react.dev" },
     { node: <SiNextdotjs />, title: "Next.js", href: "https://nextjs.org" },
@@ -20,8 +25,6 @@ const Scroll = () => {
   const robotRef = useRef(null)
 
   useGSAP(() => {
-
-
     const heroSplit = new SplitText('.title', { type: 'chars' });
     const paragraphSplit = new SplitText('.subtitle', { type: 'lines' });
 
@@ -161,8 +164,11 @@ const Scroll = () => {
                   </a>
 
                 </button>
-                <button className='button cursor-none'>
-                  <a href="" className='cursor-none'>Resume</a>
+                <button
+                  onClick={() => setIsResumeOpen(true)}
+                  className='button cursor-none flex items-center justify-center border border-black/20 dark:border-white/20 active:scale-95 font-semibold text-sm px-2 py-3 rounded-[5px] transition-all duration-200 ease-in-out shadow hover:shadow-lg w-40 h-12'
+                >
+                  Resume
                 </button>
               </div>
             </div>
@@ -182,11 +188,10 @@ const Scroll = () => {
         </div>
       </section>
 
-
-
-
+      <ResumeModal isOpen={isResumeOpen} onClose={() => setIsResumeOpen(false)} />
     </>
   )
 }
+
 
 export default Scroll
