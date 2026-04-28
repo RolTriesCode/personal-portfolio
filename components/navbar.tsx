@@ -28,7 +28,7 @@ const NavBar = () => {
       const width = window.scrollY > 50 ? (isMobile ? '90%' : '60%') : '100%'
 
       gsap.to(headerRef.current, {
-        backgroundColor: window.scrollY > 50 ? '#f3f4f6 dark:bg-black' : 'transparent',
+        backgroundColor: window.scrollY > 50 ? '#c1c1c1ff dark:bg-black' : 'transparent',
         width: width,
         duration: 0.8,
         ease: 'sine.out',
