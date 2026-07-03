@@ -3,6 +3,7 @@ import HeroSection from "@/components/heroSection";
 import NavBar from "@/components/navbar";
 import AnimationSection from "@/components/animationSection";
 import SkillSection from "@/components/skillSection";
+import CertiSection from "@/components/certiSection";
 import ProjectSection from "@/components/projectSection";
 import ContactSection from "@/components/contactSection";
 import Footer from "@/components/footerSection";
@@ -34,6 +35,7 @@ export default function Home() {
       <AboutSection />
       <AnimationSection />
       <SkillSection />
+      <CertiSection />
       <ProjectSection />
       <ContactSection />
       <Footer />
