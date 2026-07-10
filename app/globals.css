@@ -49,6 +49,24 @@ body {
   font-family: var(--font-inter);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+section[id] {
+  scroll-margin-top: 5rem;
+}
+
+::selection {
+  background: #171717;
+  color: #ffffff;
+}
+
+.dark ::selection {
+  background: #ffffff;
+  color: #171717;
+}
+
 .font-bebas {
   font-family: var(--font-bebas-neue);
 }

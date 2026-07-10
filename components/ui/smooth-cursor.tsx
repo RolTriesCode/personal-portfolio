@@ -1,6 +1,6 @@
 "use client"
 
-import { FC, useEffect, useRef, useState } from "react"
+import { FC, useEffect, useRef } from "react"
 import { motion, useSpring } from "motion/react"
 
 interface Position {
@@ -90,7 +90,6 @@ export function SmoothCursor({
     restDelta: 0.001,
   },
 }: SmoothCursorProps) {
-  const [isMoving, setIsMoving] = useState(false)
   const lastMousePos = useRef<Position>({ x: 0, y: 0 })
   const velocity = useRef<Position>({ x: 0, y: 0 })
   const lastUpdateTime = useRef(Date.now())
@@ -111,6 +110,8 @@ export function SmoothCursor({
   })
 
   useEffect(() => {
+    let scaleTimeout: ReturnType<typeof setTimeout> | undefined
+
     const updateVelocity = (currentPos: Position) => {
       const currentTime = Date.now()
       const deltaTime = currentTime - lastUpdateTime.current
@@ -150,14 +151,10 @@ export function SmoothCursor({
         previousAngle.current = currentAngle
 
         scale.set(0.95)
-        setIsMoving(true)
-
-        const timeout = setTimeout(() => {
+        if (scaleTimeout) clearTimeout(scaleTimeout)
+        scaleTimeout = setTimeout(() => {
           scale.set(1)
-          setIsMoving(false)
         }, 150)
-
-        return () => clearTimeout(timeout)
       }
     }
 
@@ -178,6 +175,7 @@ export function SmoothCursor({
       window.removeEventListener("mousemove", throttledMouseMove)
       document.body.style.cursor = "auto"
       if (rafId) cancelAnimationFrame(rafId)
+      if (scaleTimeout) clearTimeout(scaleTimeout)
     }
   }, [cursorX, cursorY, rotation, scale])
 

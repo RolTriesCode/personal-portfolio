@@ -1,150 +1,96 @@
-'use client'; 
+'use client'
 
+import { certificates } from '@/lib/certificates'
+import { Award } from 'lucide-react'
+import Image from 'next/image'
+import { useRef } from 'react'
 
-import { useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/all";
-import Image from "next/image";
-import { certificates } from "@/lib/certificates";
+import { SectionHeading } from './ui/section-heading'
+import { useSectionReveal } from './ui/use-section-reveal'
 
-// Register ScrollTrigger plugin
-gsap.registerPlugin(ScrollTrigger);
 const CertiSection = () => {
-    const triggerRef = useRef<HTMLDivElement>(null);
-    const containerRef = useRef<HTMLDivElement>(null);
-    const trackRef = useRef<HTMLDivElement>(null);
-    const progressRef = useRef<HTMLDivElement>(null);
-    useGSAP(() => {
-        if (!triggerRef.current || !containerRef.current || !trackRef.current) return;
-        // Calculate horizontal scrollable distance (total track width minus visible container width)
-        const getScrollAmount = () => {
-            if (!trackRef.current || !containerRef.current) return 0;
-            return trackRef.current.scrollWidth - containerRef.current.offsetWidth;
-        };
-        // Create the scroll timeline
-        const tl = gsap.timeline({
-            scrollTrigger: {
-                trigger: triggerRef.current,
-                pin: true,
-                scrub: 1,
-                start: "top top",
-                end: () => `+=${getScrollAmount()}`,
-                invalidateOnRefresh: true,
-            }
-        });
-        // Translate the track horizontally
-        tl.to(trackRef.current, {
-            x: () => -getScrollAmount(),
-            ease: "none",
-        }, 0);
-        // Animate the progress bar fill from 0 to 1 scale
-        if (progressRef.current) {
-            tl.to(progressRef.current, {
-                scaleX: 1,
-                ease: "none",
-            }, 0);
-        }
-    }, { scope: triggerRef });
-    return (
-               <section 
-            ref={triggerRef} 
-            id='certifications' 
-            className="relative h-screen w-full flex flex-col justify-center bg-white dark:bg-black text-black dark:text-white overflow-hidden transition-colors duration-500"
+  const sectionRef = useRef<HTMLElement>(null)
+  useSectionReveal(sectionRef)
+
+  return (
+    <section
+      ref={sectionRef}
+      id="certifications"
+      aria-labelledby="certifications-title"
+      className="overflow-hidden px-4 py-28 sm:px-6 sm:py-36 lg:px-8 lg:py-44"
+    >
+      <div className="mx-auto max-w-7xl">
+        <SectionHeading
+          id="certifications-title"
+          index="04 / 07"
+          eyebrow="Credentials"
+          title="Learning, applied and verified."
+          description="A selection of completed training across modern web development, programming fundamentals, databases, and professional communication."
+        />
+
+        <div data-reveal className="mt-14 flex items-center justify-between lg:mt-20">
+          <div className="flex items-center gap-2 text-xs text-black/40 dark:text-white/40">
+            <Award className="size-4 stroke-[1.5]" aria-hidden="true" />
+            <span>{certificates.length} certificates</span>
+          </div>
+          <p className="hidden text-[10px] uppercase tracking-[0.16em] text-black/35 dark:text-white/35 sm:block">
+            Scroll to explore
+          </p>
+        </div>
+
+        <div
+          data-reveal
+          tabIndex={0}
+          aria-label="Certificates. Scroll horizontally to browse."
+          className="-mx-4 mt-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black [scrollbar-width:none] sm:-mx-6 sm:px-6 lg:-mx-8 lg:gap-5 lg:px-8 dark:focus-visible:outline-white [&::-webkit-scrollbar]:hidden"
         >
-            <div className="w-[90%] mx-auto flex flex-col lg:flex-row items-stretch justify-between h-[85vh] gap-6 lg:gap-12">
-                
-                {/* Left Column: Title, description, and dynamic progress bar */}
-                <div className="w-full lg:w-[30%] flex flex-col justify-between flex-shrink-0 py-2 lg:py-10 z-10">
-                    <div className="space-y-3 lg:space-y-4">
-                        <span className="text-[11px] md:text-[13px] bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 px-4 py-1 w-fit rounded-[3px] font-medium tracking-wide">
-                            Credentials
-                        </span>
-                        <h2 className="text-[40px] md:text-[52px] lg:text-[60px] font-normal font-noto leading-tight mt-1">
-                            Certifications
-                        </h2>
-                        <p className="text-xs md:text-sm text-zinc-600 dark:text-zinc-400 max-w-md leading-relaxed">
-                            A curated gallery of my academic achievements, specialized certifications, and professional training in software development and UI/UX design.
-                        </p>
-                    </div>
-                                        {/* Progress Bar Indicators */}
-                    <div className="mt-6 lg:mt-0 space-y-2">
-                        <div className="flex justify-between text-[10px] md:text-xs text-zinc-400 dark:text-zinc-500 font-mono">
-                            <span>01 / START</span>
-                            <span>{certificates.length.toString().padStart(2, '0')} / END</span>
-                        </div>
-                        <div className="w-full h-[2px] bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
-                            <div 
-                                ref={progressRef} 
-                                className="h-full bg-black dark:bg-white scale-x-0 origin-left"
-                            />
-                        </div>
-                    </div>
-                </div>
+          {certificates.map((certificate, index) => (
+            <article
+              key={certificate.id}
+              className="group flex w-[82vw] max-w-[26rem] shrink-0 snap-start flex-col overflow-hidden rounded-[1.5rem] border border-black/[0.1] bg-black/[0.015] transition-[transform,border-color,background-color,box-shadow] duration-300 hover:-translate-y-1 hover:border-black/[0.18] hover:bg-white hover:shadow-[0_24px_60px_-42px_rgba(0,0,0,0.4)] dark:border-white/[0.12] dark:bg-white/[0.025] dark:hover:border-white/[0.2] dark:hover:bg-white/[0.045]"
+            >
+              <div className="relative aspect-[4/3] overflow-hidden border-b border-black/[0.08] bg-neutral-100 dark:border-white/[0.1] dark:bg-neutral-900">
+                <Image
+                  src={certificate.image}
+                  alt={`${certificate.title} certificate issued by ${certificate.issuer}`}
+                  fill
+                  sizes="(max-width: 640px) 82vw, 416px"
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.025]"
+                />
+                <span className="absolute left-4 top-4 rounded-full border border-black/[0.1] bg-white/90 px-2.5 py-1 font-mono text-[9px] text-black/60 backdrop-blur-md">
+                  {(index + 1).toString().padStart(2, '0')}
+                </span>
+              </div>
 
-                {/* Right Column: Viewport containing the horizontal scroll track */}
-                <div 
-                    ref={containerRef} 
-                    className="w-full lg:w-[70%] flex items-center overflow-hidden h-full py-2 lg:py-6 z-10"
-                >
-                    <div 
-                        ref={trackRef} 
-                        className="flex gap-5 md:gap-8 flex-nowrap pr-12 lg:pr-24"
+              <div className="flex flex-1 flex-col p-5 sm:p-6">
+                <div className="flex items-center justify-between gap-4 font-mono text-[9px] uppercase tracking-[0.12em] text-black/35 dark:text-white/35">
+                  <span>{certificate.issuer}</span>
+                  <time>{certificate.date}</time>
+                </div>
+                <h3 className="mt-5 text-lg font-semibold leading-snug tracking-[-0.03em] sm:text-xl">
+                  {certificate.title}
+                </h3>
+                <p className="mt-3 text-xs leading-5 text-black/45 dark:text-white/45">
+                  {certificate.description}
+                </p>
+
+                <ul className="mt-auto flex flex-wrap gap-1.5 pt-7" aria-label="Verified skills">
+                  {certificate.skills.map((skill) => (
+                    <li
+                      key={skill}
+                      className="rounded-full border border-black/[0.1] px-2.5 py-1 text-[9px] text-black/45 dark:border-white/[0.12] dark:text-white/45"
                     >
-                        {certificates.map((cert) => (
-                            <div 
-                                key={cert.id} 
-                                className="group relative w-[260px] sm:w-[300px] md:w-[350px] lg:w-[380px] flex-shrink-0 bg-zinc-50/50 dark:bg-zinc-900/40 backdrop-blur-md border border-zinc-200 dark:border-zinc-800/80 rounded-2xl overflow-hidden p-4 md:p-5 flex flex-col justify-between gap-4 transition-all duration-300 hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-900/60 hover:shadow-xl dark:hover:shadow-2xl"
-                            >
-                                {/* Certificate Image Container */}
-                                <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-800/50 bg-zinc-100 dark:bg-zinc-950">
-                                    <Image 
-                                        src={cert.image}
-                                        alt={cert.title}
-                                        fill
-                                        sizes="(max-w-768px) 260px, (max-w-1024px) 300px, 380px"
-                                        className="object-cover object-center group-hover:scale-[1.03] transition-transform duration-700 ease-out"
-                                    />
-                                    {/* Date Stamp overlay */}
-                                    <div className="absolute bottom-3 right-3 bg-white/90 dark:bg-black/80 backdrop-blur-sm px-2.5 py-1 rounded text-[10px] font-mono text-zinc-800 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-800">
-                                        {cert.date}
-                                    </div>
-                                </div>
-                                {/* Content Details */}
-                                <div className="space-y-2 flex-grow flex flex-col justify-between">
-                                    <div className="space-y-1.5">
-                                        <span className="text-[9px] md:text-[10px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                                            {cert.issuer}
-                                        </span>
-                                        <h3 className="text-sm sm:text-base md:text-lg font-semibold tracking-wide text-zinc-900 dark:text-white group-hover:text-black dark:group-hover:text-zinc-200 transition-colors">
-                                            {cert.title}
-                                        </h3>
-                                        <p className="text-[11px] sm:text-xs text-zinc-600 dark:text-zinc-400 line-clamp-3 leading-relaxed">
-                                            {cert.description}
-                                        </p>
-                                    </div>
-                                    {/* Tech skills verified */}
-                                    <div className="flex flex-wrap gap-1.5 pt-2">
-                                        {cert.skills.map((skill) => (
-                                            <span 
-                                                key={skill} 
-                                                className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800/30"
-                                            >
-                                                {skill}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+                      {skill}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
 
-                            </div>
-        </section>
-
-                    );
-};
-export default CertiSection;
-
-
+export default CertiSection

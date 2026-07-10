@@ -1,66 +1,94 @@
-
 'use client'
 
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion'
+import { Check, X } from 'lucide-react'
+import { useEffect, useRef } from 'react'
 
 interface SuccessModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    userName: string;
+  isOpen: boolean
+  onClose: () => void
+  userName: string
 }
 
-const SuccessModal: React.FC<SuccessModalProps> = ({ isOpen, onClose, userName }) => {
-    return (
-        <AnimatePresence>
-            {isOpen && (
-                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-                    {/* Backdrop */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        onClick={onClose}
-                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-                    />
+const SuccessModal = ({ isOpen, onClose, userName }: SuccessModalProps) => {
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
 
-                    {/* Modal Content */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="relative w-full max-w-md bg-white dark:bg-zinc-900 p-8 rounded-sm shadow-2xl flex flex-col items-center text-center"
-                    >
-                        <button
-                            onClick={onClose}
-                            className="absolute top-4 right-4 p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
-                        >
-                            <X className="w-5 h-5 text-zinc-500 dark:text-zinc-400" />
-                        </button>
+  useEffect(() => {
+    if (!isOpen) return
 
-                        <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-6">
-                            <Check className="w-8 h-8 text-green-600 dark:text-green-400" />
-                        </div>
+    closeButtonRef.current?.focus()
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose()
+    }
 
-                        <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2">
-                            Hello, {userName}!
-                        </h2>
-                        <p className="text-zinc-600 dark:text-zinc-400 mb-8">
-                            Your message has been sent successfully. I've received your details and look forward to working or communicating with you soon!
-                        </p>
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, onClose])
 
-                        <button
-                            onClick={onClose}
-                            className="w-full py-3 bg-black dark:bg-white text-white dark:text-black font-semibold rounded-[5px] hover:opacity-90 transition-all duration-200"
-                        >
-                            Close
-                        </button>
-                    </motion.div>
-                </div>
-            )}
-        </AnimatePresence>
-    );
-};
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+          <motion.button
+            type="button"
+            aria-label="Close message confirmation"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="absolute inset-0 bg-black/65 backdrop-blur-sm"
+          />
 
-export default SuccessModal;
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="success-title"
+            aria-describedby="success-description"
+            initial={{ opacity: 0, scale: 0.97, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.97, y: 16 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+            className="relative w-full max-w-md rounded-[1.75rem] border border-black/[0.1] bg-white p-7 text-center shadow-2xl dark:border-white/[0.12] dark:bg-neutral-950 sm:p-9"
+          >
+            <button
+              ref={closeButtonRef}
+              type="button"
+              onClick={onClose}
+              aria-label="Close"
+              className="absolute right-4 top-4 grid size-9 place-items-center rounded-full text-black/45 transition-colors hover:bg-black/[0.05] hover:text-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black md:cursor-none dark:text-white/45 dark:hover:bg-white/[0.08] dark:hover:text-white dark:focus-visible:outline-white"
+            >
+              <X className="size-4 stroke-[1.7]" aria-hidden="true" />
+            </button>
+
+            <div className="mx-auto grid size-14 place-items-center rounded-full border border-black/[0.12] dark:border-white/[0.14]">
+              <Check className="size-5 stroke-[1.7]" aria-hidden="true" />
+            </div>
+            <h2
+              id="success-title"
+              className="mt-6 text-2xl font-semibold tracking-[-0.045em]"
+            >
+              Thanks, {userName}.
+            </h2>
+            <p
+              id="success-description"
+              className="mt-3 text-sm leading-6 text-black/50 dark:text-white/50"
+            >
+              Your message has been sent successfully. I&apos;ll review the
+              details and get back to you as soon as possible.
+            </p>
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="mt-7 h-12 w-full rounded-full bg-black text-sm font-medium text-white transition-transform hover:scale-[1.015] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black active:scale-[0.99] md:cursor-none dark:bg-white dark:text-black dark:focus-visible:outline-white"
+            >
+              Done
+            </button>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  )
+}
+
+export default SuccessModal

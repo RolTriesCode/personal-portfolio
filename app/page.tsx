@@ -8,30 +8,13 @@ import ProjectSection from "@/components/projectSection";
 import ContactSection from "@/components/contactSection";
 import Footer from "@/components/footerSection";
 import ChatButton from "@/components/ChatButton";
-import {
-  ScrollVelocityContainer,
-  ScrollVelocityRow,
-} from "@/components/ui/scroll-based-velocity";
-import gsap from "gsap";
-import { ScrollTrigger, SplitText } from 'gsap/all';
-gsap.registerPlugin(ScrollTrigger, SplitText)
-
-
 
 export default function Home() {
   return (
-    <main className=" relative 2xl:w-[63%] m-auto">
+    <main className="relative">
       <ChatButton />
       <NavBar />
       <HeroSection />
-      <ScrollVelocityContainer className="text-4xl font-bold md:text-7xl -z-10">
-        <ScrollVelocityRow baseVelocity={10} direction={1}>
-          Full Stack Developer
-        </ScrollVelocityRow>
-        <ScrollVelocityRow baseVelocity={10} direction={-1}>
-          UI/UX Designer
-        </ScrollVelocityRow>
-      </ScrollVelocityContainer>
       <AboutSection />
       <AnimationSection />
       <SkillSection />

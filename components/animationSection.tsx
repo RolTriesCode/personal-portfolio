@@ -1,73 +1,57 @@
 'use client'
-import { useGSAP } from "@gsap/react"
-import gsap from "gsap"
-import { SplitText } from "gsap/all"
 
+import { Asterisk } from 'lucide-react'
+import { useRef } from 'react'
 
+import { useSectionReveal } from './ui/use-section-reveal'
+
+const traits = ['Creative', 'Passionate', 'Disciplined']
 
 const AnimationSection = () => {
-
-
-    useGSAP(() => {
-
-        
-        gsap.fromTo('.anime', {
-            y: 0,
-            duration: 0.4,
-            ease: 'power2.out',
-            width: '70%',
-        }, {
-            y: -100,
-            duration: 1,
-            ease: 'sine.out',
-            width: '100%',
-            pin: true,
-            height: '100vh',
-            scrub: true,
-            scrollTrigger: {
-                trigger: '.anime',
-                start: 'top 70%',
-            }
-        });
-
-        const traitsText = new SplitText('.traits', {type: 'words'})
-
-        gsap.fromTo(traitsText.words, {
-            opacity:0,
-            scale: 0.55,
-            y: 500,
-        }, {
-            opacity:1,
-            y: 0,
-            scale: 1,
-            stagger: 0.2,
-            ease: 'sine.out',
-            duration:1,
-            scrub: true,
-            scrollTrigger: {
-                trigger:'.anime',
-                start: 'top 60%',
-
-            }
-        })
-
-
-
-
-    })
+  const sectionRef = useRef<HTMLElement>(null)
+  useSectionReveal(sectionRef)
 
   return (
-    <div className="anime bg-black  translate-y-10 dark:bg-white dark:text-black text-white -gap-y-10 w-[70%] h-[500px] mx-auto perspective-top flex items-center justify-center flex-col">
-        <p className="traits font-bebas text-[96px] md:text-[128px]">
-            CREATIVE
+    <section
+      ref={sectionRef}
+      aria-label="Creative principles"
+      className="px-2 py-8 sm:px-4 lg:px-6"
+    >
+      <div className="mx-auto max-w-[96rem] overflow-hidden rounded-[2rem] bg-neutral-950 px-5 py-8 text-white sm:px-8 sm:py-10 lg:rounded-[2.5rem] lg:px-12 lg:py-12 dark:bg-white dark:text-black">
+        <div
+          data-reveal
+          className="mb-10 flex items-center justify-between border-b border-white/15 pb-5 text-[10px] font-medium uppercase tracking-[0.18em] text-white/45 dark:border-black/15 dark:text-black/45"
+        >
+          <span>How I approach the work</span>
+          <Asterisk className="size-4 stroke-[1.5]" aria-hidden="true" />
+        </div>
+
+        <div>
+          {traits.map((trait, index) => (
+            <div
+              key={trait}
+              data-reveal
+              className="group flex items-center justify-between gap-4 border-b border-white/15 py-3 last:border-b-0 dark:border-black/15 sm:py-4"
+            >
+              <span className="font-mono text-[10px] text-white/35 dark:text-black/35">
+                0{index + 1}
+              </span>
+              <p className="font-bebas text-[clamp(4.5rem,13vw,13rem)] leading-[0.82] tracking-[-0.025em] transition-transform duration-500 ease-out group-hover:-translate-x-3 sm:group-hover:-translate-x-5">
+                {trait}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <p
+          data-reveal
+          className="ml-auto mt-8 max-w-sm text-right text-xs leading-5 text-white/45 dark:text-black/45"
+        >
+          Different strengths, one standard: thoughtful work executed with
+          care.
         </p>
-        <p className="traits font-bebas text-[96px] md:text-[128px]">
-            PASSIONATE
-        </p>
-        <p className="traits font-bebas text-[96px] md:text-[128px]">
-            DISCIPLINED
-        </p>
-    </div>  
+      </div>
+    </section>
   )
 }
 

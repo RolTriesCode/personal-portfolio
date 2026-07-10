@@ -1,19 +1,20 @@
 import { useCallback, useEffect, useMemo, useRef, useState, memo, CSSProperties, ReactNode } from 'react';
 import './LogoLoop.css';
 
+/* eslint-disable @next/next/no-img-element -- supports generic remote logo sources and srcSet */
+
 const ANIMATION_CONFIG = { SMOOTH_TAU: 0.25, MIN_COPIES: 2, COPY_HEADROOM: 2 };
 
 const toCssLength = (value: number | string | undefined) =>
   typeof value === 'number' ? `${value}px` : value ?? undefined;
 
-type CallbackDeps = any[];
-
 const useResizeObserver = (
   callback: () => void,
-  elements: React.RefObject<HTMLElement | null>[],
-  dependencies: CallbackDeps = []
+  containerRef: React.RefObject<HTMLElement | null>,
+  sequenceRef: React.RefObject<HTMLElement | null>,
 ) => {
   useEffect(() => {
+    const elements = [containerRef, sequenceRef];
     if (!window.ResizeObserver) {
       const handleResize = () => callback();
       window.addEventListener('resize', handleResize);
@@ -31,13 +32,12 @@ const useResizeObserver = (
     callback();
 
     return () => observers.forEach(observer => observer?.disconnect());
-  }, [callback, ...dependencies]);
+  }, [callback, containerRef, sequenceRef]);
 };
 
 const useImageLoader = (
   seqRef: React.RefObject<HTMLElement | null>,
   onLoad: () => void,
-  dependencies: CallbackDeps = []
 ) => {
   useEffect(() => {
     const images = seqRef.current?.querySelectorAll<HTMLImageElement>('img') ?? [];
@@ -66,7 +66,7 @@ const useImageLoader = (
         img.removeEventListener('error', handleImageLoad);
       });
     };
-  }, [onLoad, ...dependencies]);
+  }, [onLoad, seqRef]);
 };
 
 const useAnimationLoop = (
@@ -129,7 +129,7 @@ const useAnimationLoop = (
       rafRef.current = null;
       lastTimestampRef.current = null;
     };
-  }, [targetVelocity, seqWidth, seqHeight, isHovered, hoverSpeed, isVertical]);
+  }, [trackRef, targetVelocity, seqWidth, seqHeight, isHovered, hoverSpeed, isVertical]);
 };
 
 type LogoItem = {
@@ -200,7 +200,7 @@ export const LogoLoop = memo(({
 
   const targetVelocity = useMemo(() => {
     const magnitude = Math.abs(speed);
-    let directionMultiplier = isVertical
+    const directionMultiplier = isVertical
       ? direction === 'up' ? 1 : -1
       : direction === 'left' ? 1 : -1;
     const speedMultiplier = speed < 0 ? -1 : 1;
@@ -233,8 +233,8 @@ export const LogoLoop = memo(({
     }
   }, [isVertical]);
 
-  useResizeObserver(updateDimensions, [containerRef, seqRef], [logos, gap, logoHeight, isVertical]);
-  useImageLoader(seqRef, updateDimensions, [logos, gap, logoHeight, isVertical]);
+  useResizeObserver(updateDimensions, containerRef, seqRef);
+  useImageLoader(seqRef, updateDimensions);
   useAnimationLoop(trackRef, targetVelocity, seqWidth, seqHeight, isHovered, effectiveHoverSpeed, isVertical);
 
   const cssVariables = useMemo(() => ({

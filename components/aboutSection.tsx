@@ -1,84 +1,107 @@
 'use client'
 
-import { useGSAP } from "@gsap/react"
-import gsap from "gsap"
-import { SplitText } from "gsap/all"
+import { ArrowDownRight } from 'lucide-react'
+import { useRef } from 'react'
+
+import { SectionHeading } from './ui/section-heading'
+import { useSectionReveal } from './ui/use-section-reveal'
+
+const principles = [
+  {
+    number: '01',
+    title: 'Design with purpose',
+    text: 'Every interface decision should make the experience clearer, easier, or more meaningful.',
+  },
+  {
+    number: '02',
+    title: 'Build for real use',
+    text: 'I turn ideas into responsive, accessible products that remain practical beyond the first impression.',
+  },
+  {
+    number: '03',
+    title: 'Keep improving',
+    text: 'Curiosity, iteration, and disciplined problem-solving shape both my process and the work I ship.',
+  },
+]
 
 const AboutSection = () => {
+  const sectionRef = useRef<HTMLElement>(null)
+  useSectionReveal(sectionRef)
 
-    useGSAP(() => {
+  return (
+    <section
+      ref={sectionRef}
+      id="about"
+      aria-labelledby="about-title"
+      className="px-4 py-28 sm:px-6 sm:py-36 lg:px-8 lg:py-44"
+    >
+      <div className="mx-auto max-w-7xl">
+        <SectionHeading
+          id="about-title"
+          index="02 / 07"
+          eyebrow="About"
+          title="Design-minded development, built around people."
+          description="I work where thoughtful visual design meets dependable engineering—shaping digital products that feel intuitive from the first interaction."
+        />
 
-        gsap.from('.about', {
-            opacity: 0,
-            y: 40,
-            duration: 1.5,
-            scrub: true,
-            ease: 'power2.out',
-            scrollTrigger: {
-                trigger: '.about',  
-                start: 'top 99%',
-                toggleActions: 'play none none none',
-            }
-        });
+        <div className="mt-20 grid gap-14 md:grid-cols-[0.7fr_1.3fr] md:gap-10 lg:mt-28">
+          <div data-reveal className="md:sticky md:top-32 md:self-start">
+            <div className="flex size-12 items-center justify-center rounded-full border border-black/[0.12] dark:border-white/[0.14]">
+              <ArrowDownRight
+                className="size-5 stroke-[1.5]"
+                aria-hidden="true"
+              />
+            </div>
+            <p className="mt-5 max-w-xs text-xs leading-5 text-black/40 dark:text-white/40">
+              Full-stack developer and UI/UX designer based in Vigan City,
+              Philippines.
+            </p>
+          </div>
 
-        gsap.from('.whoiam', {
-            opacity: 0,
-            y: 50,
-            duration: 1.5,
-            ease: 'power2.out',
-            scrollTrigger: {
-                trigger: '.whoiam',
-                start: 'top 80%',
-                toggleActions: 'play none none none',
-            }
-        });
+          <div>
+            <p
+              data-reveal
+              className="max-w-3xl text-pretty text-[clamp(1.7rem,3.4vw,3.35rem)] leading-[1.12] tracking-[-0.045em]"
+            >
+              I&apos;m Errol—a builder of interfaces who bridges the gap between
+              design and development, turning ideas into functional and
+              engaging digital experiences.
+            </p>
 
-        const paragraphSplit = new SplitText('.aboutme', { type: 'words' });
-        gsap.set(paragraphSplit.words, { opacity: 0, y: 60 });
+            <p
+              data-reveal
+              className="mt-8 max-w-2xl text-[15px] leading-7 text-black/50 dark:text-white/50"
+            >
+              With experience across frontend and backend technologies, I
+              focus on creating work that is efficient, scalable, accessible,
+              and genuinely enjoyable to use. I care about the details, but
+              always in service of the larger experience.
+            </p>
 
-        paragraphSplit.words.forEach(line => {
-            gsap.to(line, {
-                opacity: 1,
-                y: 0,
-                duration: 1.5,
-                scrub: true,
-                ease: 'expo.out',
-                scrollTrigger: {
-                    trigger: line,     
-                    start: 'top 80%',   
-                    toggleActions: 'play none none none',
-                }
-            });
-        });
-    });
-
-    return (
-        <section id='about' className="hd h-screen flex flex-wrap">
-            <div className="h-screen w-screen flex flex-wrap-reverse">
-
-                <div className='lg:w-[40%] h-screen hidden lg:flex'></div>
-
-                <div className='w-[95%] mx-auto lg:w-[60%] z-0 text-center flex items-center justify-center flex-col mt-0'>
-                    <div className='mb-6'>
-                        <p className='about text-[12px] md:text-[14px] bg-[#DDE1E6] px-5 py-1 w-fit rounded-[3px] m-auto dark:text-black'>About</p>
-                        <h3 className='whoiam font-noto text-[56px] md:text-[66px] font-normal'>Who I Am</h3>
-                    </div>
-
-                    <div>
-                    <p className='aboutme text-justify px-2 w-[100%] lg:w-[80%] 2xl:w-[100%]  m-auto text-[14px] md:text-[15px] text-[#676474]'>
-                    I’m Errol — a full-stack developer and builder of interfaces with a passion for crafting intuitive, user-friendly digital experiences. I bridge the gap between design and development, turning ideas into functional, engaging interfaces.
-
-                    <br /><br />
-
-                    With experience in both frontend and backend technologies, I focus on creating projects that are efficient, scalable, and enjoyable to use. I’m committed to continuous growth, tackling challenging problems, and building digital experiences that are seamless, accessible, and meaningful.
-                    </p>
-
-                    </div>
-                </div>
-
-            </div>  
-        </section>
-    )
+            <div className="mt-16 border-t border-black/[0.1] dark:border-white/[0.12]">
+              {principles.map((principle) => (
+                <article
+                  key={principle.number}
+                  data-reveal
+                  className="group grid gap-3 border-b border-black/[0.1] py-6 transition-colors hover:bg-black/[0.02] dark:border-white/[0.12] dark:hover:bg-white/[0.025] sm:grid-cols-[4rem_0.75fr_1.25fr] sm:items-start sm:gap-6"
+                >
+                  <span className="font-mono text-[10px] text-black/35 dark:text-white/35">
+                    {principle.number}
+                  </span>
+                  <h3 className="text-sm font-semibold tracking-[-0.02em]">
+                    {principle.title}
+                  </h3>
+                  <p className="max-w-md text-sm leading-6 text-black/45 dark:text-white/45">
+                    {principle.text}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
 }
 
 export default AboutSection

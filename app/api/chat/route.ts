@@ -1,23 +1,39 @@
 
-import { OpenAI } from "openai";
+import OpenAI from "openai";
 import { NextResponse } from "next/server";
-
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
 
 export async function POST(req: Request) {
     try {
-        const { messages } = await req.json();
-        console.log("Chat API Request Messages:", messages);
-
-        if (!process.env.OPENAI_API_KEY) {
-            console.error("OPENAI_API_KEY is missing from environment variables");
-            return NextResponse.json({ error: "API Key missing" }, { status: 500 });
+        const apiKey = process.env.OPENAI_API_KEY;
+        if (!apiKey) {
+            return NextResponse.json(
+                { error: "Chat service is temporarily unavailable" },
+                { status: 503 },
+            );
         }
 
+        const body = await req.json() as {
+            messages?: Array<{ role?: unknown; content?: unknown }>;
+        };
+
+        const messages: Array<{ role: 'user' | 'assistant'; content: string }> = (body.messages ?? []).flatMap((message) => {
+            if (
+                (message.role === 'user' || message.role === 'assistant') &&
+                typeof message.content === 'string'
+            ) {
+                return [{ role: message.role, content: message.content } as const];
+            }
+            return [];
+        });
+
+        if (messages.length === 0) {
+            return NextResponse.json({ error: "A message is required" }, { status: 400 });
+        }
+
+        const openai = new OpenAI({ apiKey });
+
         const systemMessage = {
-            role: "system",
+            role: "system" as const,
             content: `
                 You are Errol Tabangen, a 21-year-old Full Stack Web Developer based in Vigan City, Philippines. 
                 You are currently a student at the University of the Northern Philippines (started in 2021) with a strong focus on building production-ready web applications. You also maintain a disciplined lifestyle through regular gym fitness.
@@ -55,14 +71,12 @@ export async function POST(req: Request) {
             messages: [systemMessage, ...messages],
         });
 
-        console.log("OpenAI Response:", response.choices[0].message.content);
-
         return NextResponse.json({ message: response.choices[0].message.content });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Chat API error details:", error);
         return NextResponse.json({
             error: "Failed to fetch response",
-            details: error?.message || "Unknown error"
+            details: error instanceof Error ? error.message : "Unknown error"
         }, { status: 500 });
     }
 }

@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Download, FileText } from 'lucide-react';
+import { X, Download } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import ResumePDF from './ResumePDF';
 
@@ -23,14 +23,6 @@ interface ResumeModalProps {
 }
 
 const ResumeModal: React.FC<ResumeModalProps> = ({ isOpen, onClose }) => {
-    const [isMounted, setIsMounted] = useState(false);
-
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
-
-    if (!isMounted) return null;
-
     return (
         <AnimatePresence>
             {isOpen && (
@@ -65,7 +57,6 @@ const ResumeModal: React.FC<ResumeModalProps> = ({ isOpen, onClose }) => {
                                     document={<ResumePDF />}
                                     fileName="ErrolTabangen_Resume.pdf"
                                 >
-                                    {/* @ts-ignore - loading prop is mixed in by PDFDownloadLink */}
                                     {({ loading }: { loading: boolean }) => (
                                         <button
                                             className="flex items-center gap-2 px-4 py-2 bg-black dark:bg-white hover:bg-black/80 text-white dark:text-black rounded-lg transition-colors font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"

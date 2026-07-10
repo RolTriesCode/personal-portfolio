@@ -23,7 +23,7 @@ const getAttr = (
   return Math.max(minVal, val + minVal);
 };
 
-const debounce = <T extends (...args: any[]) => void>(
+const debounce = <T extends (...args: never[]) => void>(
   func: T,
   delay: number
 ) => {
