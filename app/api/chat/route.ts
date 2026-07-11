@@ -1,82 +1,87 @@
-
-import OpenAI from "openai";
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request) {
-    try {
-        const apiKey = process.env.OPENAI_API_KEY;
-        if (!apiKey) {
-            return NextResponse.json(
-                { error: "Chat service is temporarily unavailable" },
-                { status: 503 },
-            );
-        }
+import {
+  AIConfigurationError,
+  generateAIResponse,
+  type AIMessage,
+} from "@/lib/ai/router";
 
-        const body = await req.json() as {
-            messages?: Array<{ role?: unknown; content?: unknown }>;
-        };
+export const runtime = "nodejs";
 
-        const messages: Array<{ role: 'user' | 'assistant'; content: string }> = (body.messages ?? []).flatMap((message) => {
-            if (
-                (message.role === 'user' || message.role === 'assistant') &&
-                typeof message.content === 'string'
-            ) {
-                return [{ role: message.role, content: message.content } as const];
-            }
-            return [];
-        });
+const MAX_MESSAGES = 20;
+const MAX_MESSAGE_LENGTH = 2_000;
 
-        if (messages.length === 0) {
-            return NextResponse.json({ error: "A message is required" }, { status: 400 });
-        }
+const systemPrompt = `You are Errol Tabangen's AI portfolio assistant. Errol is a full-stack web developer based in Vigan City, Philippines and a student at the University of Northern Philippines.
 
-        const openai = new OpenAI({ apiKey });
+He works with Next.js, React, TypeScript, Tailwind CSS, Node.js, Prisma, PostgreSQL, MongoDB, Sanity, Clerk, Stripe, and GSAP. His work includes AI-powered platforms, enterprise tools, e-commerce experiences, and developer portfolios.
 
-        const systemMessage = {
-            role: "system" as const,
-            content: `
-                You are Errol Tabangen, a 21-year-old Full Stack Web Developer based in Vigan City, Philippines. 
-                You are currently a student at the University of the Northern Philippines (started in 2021) with a strong focus on building production-ready web applications. You also maintain a disciplined lifestyle through regular gym fitness.
+Communicate clearly, professionally, and concisely. Be friendly and solution-oriented. For hiring, availability, or freelance questions, say that Errol is open to opportunities. Contact: erroltabangen.dev@gmail.com and linkedin.com/in/erroltabangen. Give practical, beginner-friendly technical advice and gently redirect unrelated topics toward Errol's work or professional topics. Do not claim to be Errol; clearly identify yourself as his AI assistant when relevant.`;
 
-                You specialize in modern full-stack development using Next.js, React, TypeScript, Tailwind CSS, Node.js, Prisma, PostgreSQL, MongoDB, Sanity, Clerk, Stripe, and GSAP.
+function parseMessages(value: unknown): AIMessage[] | null {
+  if (!Array.isArray(value) || value.length === 0 || value.length > MAX_MESSAGES) {
+    return null;
+  }
 
-                Your work includes AI-powered platforms, enterprise tools, e-commerce experiences, and visually rich developer portfolios.
+  const messages: AIMessage[] = [];
+  for (const item of value) {
+    if (!item || typeof item !== "object") return null;
 
-                Professional Conduct:
-                - Communicate clearly, confidently, and professionally.
-                - Be friendly, approachable, and solution-oriented.
-                - Keep responses concise unless more detail is requested.
-
-                Hiring & Collaboration:
-                - If asked about availability, hiring, or freelance work, clearly state that you are open to opportunities.
-                - If asked how to get in touch, provide professional contact details such as email or LinkedIn:
-                Example:
-                “You can reach me via email at erroltabangen.dev@gmail.com or connect with me on LinkedIn at linkedin.com/in/erroltabangen.”
-
-                Technical Standards:
-                - Answer technical questions based on real-world full-stack experience.
-                - Use clean, minimal, and scalable TypeScript and Next.js examples.
-                - Share best practices for performance, maintainability, and architecture.
-
-                Guidance & Advice:
-                - Provide practical, beginner-friendly learning advice when asked.
-                - Maintain professionalism for non-technical questions.
-                - Gently steer unrelated discussions back to technology or professional topics.
-                `
-        };
-
-
-        const response = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: [systemMessage, ...messages],
-        });
-
-        return NextResponse.json({ message: response.choices[0].message.content });
-    } catch (error: unknown) {
-        console.error("Chat API error details:", error);
-        return NextResponse.json({
-            error: "Failed to fetch response",
-            details: error instanceof Error ? error.message : "Unknown error"
-        }, { status: 500 });
+    const { role, content } = item as Record<string, unknown>;
+    if (
+      (role !== "user" && role !== "assistant") ||
+      typeof content !== "string" ||
+      content.trim().length === 0 ||
+      content.length > MAX_MESSAGE_LENGTH
+    ) {
+      return null;
     }
+
+    messages.push({ role, content: content.trim() });
+  }
+
+  return messages;
+}
+
+export async function POST(request: Request) {
+  try {
+    const body: unknown = await request.json();
+    const messages = parseMessages(
+      body && typeof body === "object"
+        ? (body as Record<string, unknown>).messages
+        : undefined,
+    );
+
+    if (!messages) {
+      return NextResponse.json(
+        { error: "Please send a valid message." },
+        { status: 400 },
+      );
+    }
+
+    const message = await generateAIResponse({ messages, systemPrompt });
+    return NextResponse.json({ message });
+  } catch (error: unknown) {
+    if (error instanceof SyntaxError) {
+      return NextResponse.json(
+        { error: "Invalid request body." },
+        { status: 400 },
+      );
+    }
+
+    if (error instanceof AIConfigurationError) {
+      console.error("Chat API has no configured AI providers");
+      return NextResponse.json(
+        { error: "Chat service is not configured." },
+        { status: 503 },
+      );
+    }
+
+    console.error("All AI providers failed", {
+      name: error instanceof Error ? error.name : "UnknownError",
+    });
+    return NextResponse.json(
+      { error: "The assistant could not respond. Please try again." },
+      { status: 502 },
+    );
+  }
 }

@@ -3,15 +3,22 @@ import vigEnture from '@/public/vigEnture.jpg'
 import ignis from '@/public/ignis.jpg'
 import mojita from '@/public/mojita.jpg'
 import flameAble from '@/public/flameAble.png'
-
+import nexum from '@/public/nexum.png'
 
 export const projects = [
 
 
     {
-        src: vigEnture,
+        src: nexum,
         title: "Nexum",
         description: "Nexum is the orchestration layer for autonomous AI agents — reasoning through ambiguity, coordinating across your stack, and shipping real outcomes without waiting on a human in the loop.",
+        tech: ["Next.js", "GSAP", "Tailwind CSS", "Lenis"],
+        year: "2026"
+    },
+    {
+        src: nexum,
+        title: "Axiom",
+        description: "Axiom brings depth, light, and motion to every interface — a design system built for the next dimension of the web.",
         tech: ["Next.js", "GSAP", "Tailwind CSS", "Lenis"],
         year: "2026"
     },

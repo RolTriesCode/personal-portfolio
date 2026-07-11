@@ -41,12 +41,18 @@ const HeroSection = () => {
 
   useGSAP(
     () => {
+      const hero = heroRef.current
+      const nextSection = document.querySelector<HTMLElement>('#about')
+
+      if (!hero) return
+
       const reducedMotion = window.matchMedia(
         '(prefers-reduced-motion: reduce)',
       ).matches
 
       if (reducedMotion) {
         gsap.set('[data-hero-reveal]', { autoAlpha: 1 })
+        gsap.set('[data-hero-title], #about', { clearProps: 'all' })
         return
       }
 
@@ -107,6 +113,79 @@ const HeroSection = () => {
       const media = gsap.matchMedia()
 
       media.add(
+        {
+          desktop: '(min-width: 1024px)',
+          mobile: '(max-width: 1023px)',
+        },
+        (context) => {
+          if (!nextSection) return
+
+          const { desktop } = context.conditions as {
+            desktop: boolean
+            mobile: boolean
+          }
+
+          const nextLift = desktop ? '18svh' : '12svh'
+
+          gsap.set('[data-hero-title]', {
+            force3D: true,
+            willChange: 'transform, opacity',
+            transformOrigin: '50% 50%',
+          })
+
+          gsap.set(nextSection, {
+            y: nextLift,
+            backgroundColor: 'var(--background)',
+            force3D: true,
+            position: 'relative',
+            willChange: 'transform',
+            zIndex: 20,
+          })
+
+          const scrollTimeline = gsap.timeline({
+            defaults: { ease: 'none' },
+            scrollTrigger: {
+              trigger: hero,
+              start: 'top top',
+              end: () => `+=${window.innerHeight * (desktop ? 1.65 : 1.45)}`,
+              pin: true,
+              pinSpacing: false,
+              anticipatePin: 1,
+              scrub: 0.9,
+              invalidateOnRefresh: true,
+            },
+          })
+
+          scrollTimeline
+            .to('[data-hero-title]', {
+              autoAlpha: 0,
+              scale: 0,
+              duration: 0.58,
+            })
+            .to(
+              nextSection,
+              {
+                y: 0,
+                duration: 0.42,
+              },
+              0.58,
+            )
+
+          return () => {
+            scrollTimeline.kill()
+            gsap.set('[data-hero-title]', {
+              clearProps:
+                'force3D,transform,transformOrigin,opacity,visibility,willChange',
+            })
+            gsap.set(nextSection, {
+              clearProps:
+                'backgroundColor,force3D,position,transform,willChange,zIndex',
+            })
+          }
+        },
+      )
+
+      media.add(
         '(min-width: 1024px) and (prefers-reduced-motion: no-preference)',
         () => {
           gsap.to(robotRef.current, {
@@ -116,7 +195,7 @@ const HeroSection = () => {
             scale: 0.92,
             ease: 'none',
             scrollTrigger: {
-              trigger: heroRef.current,
+              trigger: hero,
               start: '65% center',
               end: 'bottom top',
               scrub: 0.7,

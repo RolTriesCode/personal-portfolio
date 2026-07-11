@@ -10,6 +10,8 @@ type ChatMessage = {
   content: string
 }
 
+const MAX_MESSAGE_LENGTH = 2_000
+
 const initialMessage: ChatMessage = {
   role: 'assistant',
   content: "Hi! I'm Errol's AI assistant. How can I help you today?",
@@ -20,6 +22,7 @@ function ChatButton() {
   const [messages, setMessages] = useState<ChatMessage[]>([initialMessage])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -49,6 +52,7 @@ function ChatButton() {
 
     setMessages(nextMessages)
     setInput('')
+    setError(null)
     setIsLoading(true)
 
     try {
@@ -58,31 +62,29 @@ function ChatButton() {
         body: JSON.stringify({ messages: nextMessages }),
       })
 
-      const data = (await response.json()) as {
+      const data = (await response.json().catch(() => null)) as {
         message?: string
-        details?: string
         error?: string
-      }
+      } | null
 
       if (!response.ok) {
-        throw new Error(data.details || data.error || 'Unable to connect')
+        throw new Error(data?.error || 'Unable to connect to the assistant.')
       }
 
-      if (data.message) {
-        setMessages((current) => [
-          ...current,
-          { role: 'assistant', content: data.message as string },
-        ])
+      if (!data?.message?.trim()) {
+        throw new Error('The assistant returned an empty response.')
       }
-    } catch {
+
       setMessages((current) => [
         ...current,
-        {
-          role: 'assistant',
-          content:
-            "I'm having trouble connecting right now. You can reach Errol directly through the contact section below.",
-        },
+        { role: 'assistant', content: data.message!.trim() },
       ])
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : 'Unable to connect to the assistant.',
+      )
     } finally {
       setIsLoading(false)
     }
@@ -158,6 +160,25 @@ function ChatButton() {
                 </div>
               </div>
             )}
+            {error && !isLoading && (
+              <div className="rounded-xl border border-red-500/20 bg-red-500/[0.06] px-3 py-2.5 text-xs text-red-700 dark:text-red-300" role="alert">
+                <p>{error}</p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const lastUserMessage = [...messages].reverse().find((message) => message.role === 'user')
+                    if (!lastUserMessage) return
+                    setMessages((current) => current.slice(0, -1))
+                    setInput(lastUserMessage.content)
+                    setError(null)
+                    inputRef.current?.focus()
+                  }}
+                  className="mt-1.5 font-semibold underline underline-offset-2"
+                >
+                  Edit and retry
+                </button>
+              </div>
+            )}
             <div ref={messagesEndRef} />
           </div>
 
@@ -177,6 +198,8 @@ function ChatButton() {
                 onChange={(event) => setInput(event.target.value)}
                 placeholder="Ask about Errol’s work…"
                 autoComplete="off"
+                maxLength={MAX_MESSAGE_LENGTH}
+                disabled={isLoading}
                 className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-black/30 md:cursor-none dark:placeholder:text-white/30"
               />
               <button
