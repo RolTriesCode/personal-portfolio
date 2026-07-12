@@ -91,105 +91,305 @@ const skillGroups: SkillGroup[] = [
       { name: 'GitHub', icon: GitBranch },
       { name: 'GSAP', icon: Sparkles, emphasis: true },
       { name: 'Figma', icon: Figma, emphasis: true },
-      { name: 'Bootstrap', icon: Layers2 },
     ],
   },
 ]
 
 const SkillSection = () => {
   const sectionRef = useRef<HTMLElement>(null)
+  const experienceRef = useRef<HTMLDivElement>(null)
+  const progressRef = useRef<HTMLDivElement>(null)
+
   useSectionReveal(sectionRef)
 
   useGSAP(
     () => {
       const section = sectionRef.current
-      if (!section) return
+      const experience = experienceRef.current
 
-      const reducedMotion = window.matchMedia(
-        '(prefers-reduced-motion: reduce)',
-      ).matches
+      if (!section || !experience) return
 
-      if (reducedMotion) {
-        gsap.set('[data-skill-card], [data-skill-chip], [data-skill-orbit]', {
-          clearProps: 'all',
-        })
-        return
-      }
+      const chapters = gsap.utils.toArray<HTMLElement>(
+        '[data-skill-chapter]',
+        experience,
+      )
 
-      gsap.from('[data-skill-chip]', {
-        autoAlpha: 0,
-        y: 10,
-        duration: 0.45,
-        ease: 'power2.out',
-        stagger: 0.018,
-        scrollTrigger: {
-          trigger: section,
-          start: 'top 68%',
-          once: true,
+      const navItems = gsap.utils.toArray<HTMLElement>(
+        '[data-skill-nav]',
+        experience,
+      )
+
+      const counters = gsap.utils.toArray<HTMLElement>(
+        '[data-skill-counter]',
+        experience,
+      )
+
+      const interactiveWords = gsap.utils.toArray<HTMLElement>(
+        '[data-skill-word]',
+        experience,
+      )
+
+      const mm = gsap.matchMedia()
+
+      mm.add(
+        {
+          desktop: '(min-width: 1024px)',
+          mobile: '(max-width: 1023px)',
+          reduceMotion: '(prefers-reduced-motion: reduce)',
         },
-      })
+        (context) => {
+          const conditions = context.conditions as {
+            desktop: boolean
+            mobile: boolean
+            reduceMotion: boolean
+          }
 
-      gsap.to('[data-skill-orbit]', {
-        yPercent: -18,
-        rotate: 2,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 0.8,
+          if (conditions.reduceMotion) {
+            gsap.set(
+              [
+                chapters,
+                navItems,
+                counters,
+                interactiveWords,
+                '[data-skill-meta]',
+              ],
+              {
+                clearProps: 'all',
+              },
+            )
+
+            return
+          }
+
+          if (conditions.desktop) {
+            chapters.forEach((chapter, index) => {
+              gsap.set(chapter, {
+                autoAlpha: index === 0 ? 1 : 0,
+                yPercent: index === 0 ? 0 : 8,
+                pointerEvents: index === 0 ? 'auto' : 'none',
+              })
+            })
+
+            navItems.forEach((item, index) => {
+              gsap.set(item, {
+                opacity: index === 0 ? 1 : 0.28,
+              })
+            })
+
+            counters.forEach((counter, index) => {
+              gsap.set(counter, {
+                autoAlpha: index === 0 ? 1 : 0,
+                yPercent: index === 0 ? 0 : 70,
+              })
+            })
+
+            const timeline = gsap.timeline({
+              defaults: {
+                ease: 'none',
+              },
+              scrollTrigger: {
+                trigger: experience,
+                start: 'top top',
+                end: () =>
+                  `+=${window.innerHeight * (skillGroups.length + 0.4)}`,
+                pin: true,
+                scrub: 0.8,
+                anticipatePin: 1,
+                invalidateOnRefresh: true,
+                onUpdate: (self) => {
+                  if (!progressRef.current) return
+
+                  gsap.set(progressRef.current, {
+                    scaleX: self.progress,
+                  })
+                },
+              },
+            })
+
+            chapters.forEach((chapter, index) => {
+              if (index === 0) return
+
+              const previousChapter = chapters[index - 1]
+              const previousNav = navItems[index - 1]
+              const currentNav = navItems[index]
+              const previousCounter = counters[index - 1]
+              const currentCounter = counters[index]
+
+              const position = index
+
+              timeline
+                .to(
+                  previousChapter,
+                  {
+                    autoAlpha: 0,
+                    yPercent: -8,
+                    pointerEvents: 'none',
+                    duration: 0.3,
+                  },
+                  position,
+                )
+                .to(
+                  previousNav,
+                  {
+                    opacity: 0.28,
+                    duration: 0.2,
+                  },
+                  position,
+                )
+                .to(
+                  previousCounter,
+                  {
+                    autoAlpha: 0,
+                    yPercent: -70,
+                    duration: 0.2,
+                  },
+                  position,
+                )
+                .fromTo(
+                  chapter,
+                  {
+                    autoAlpha: 0,
+                    yPercent: 8,
+                    pointerEvents: 'none',
+                  },
+                  {
+                    autoAlpha: 1,
+                    yPercent: 0,
+                    pointerEvents: 'auto',
+                    duration: 0.4,
+                  },
+                  position + 0.08,
+                )
+                .to(
+                  currentNav,
+                  {
+                    opacity: 1,
+                    duration: 0.25,
+                  },
+                  position + 0.08,
+                )
+                .fromTo(
+                  currentCounter,
+                  {
+                    autoAlpha: 0,
+                    yPercent: 70,
+                  },
+                  {
+                    autoAlpha: 1,
+                    yPercent: 0,
+                    duration: 0.3,
+                  },
+                  position + 0.08,
+                )
+            })
+          }
+
+          if (conditions.mobile) {
+            gsap.from(chapters, {
+              y: 60,
+              autoAlpha: 0,
+              duration: 0.85,
+              stagger: 0.16,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: experience,
+                start: 'top 80%',
+                once: true,
+              },
+            })
+
+            chapters.forEach((chapter) => {
+              const words =
+                chapter.querySelectorAll<HTMLElement>('[data-skill-word]')
+
+              gsap.from(words, {
+                y: 14,
+                autoAlpha: 0,
+                duration: 0.45,
+                stagger: 0.035,
+                ease: 'power2.out',
+                scrollTrigger: {
+                  trigger: chapter,
+                  start: 'top 72%',
+                  once: true,
+                },
+              })
+            })
+          }
         },
-      })
+      )
 
-      const cards = gsap.utils.toArray<HTMLElement>('[data-skill-card]')
-      const cleanups: Array<() => void> = []
+      const cleanups = interactiveWords.map((word) => {
+        const icon = word.querySelector<HTMLElement>('[data-skill-icon]')
+        const line = word.querySelector<HTMLElement>('[data-skill-line]')
 
-      cards.forEach((card) => {
-        const icon = card.querySelector<HTMLElement>('[data-skill-card-icon]')
-        const rule = card.querySelector<HTMLElement>('[data-skill-rule]')
-
-        const enter = () => {
-          gsap.to(icon, {
-            y: -3,
-            scale: 1.04,
-            duration: 0.28,
-            ease: 'power2.out',
-          })
-          gsap.to(rule, {
-            scaleX: 1,
-            duration: 0.38,
+        const handleEnter = () => {
+          gsap.to(word, {
+            x: 8,
+            duration: 0.35,
             ease: 'power3.out',
           })
+
+          if (icon) {
+            gsap.to(icon, {
+              rotate: 8,
+              scale: 1.08,
+              duration: 0.35,
+              ease: 'back.out(1.8)',
+            })
+          }
+
+          if (line) {
+            gsap.to(line, {
+              scaleX: 1,
+              duration: 0.45,
+              ease: 'power3.out',
+            })
+          }
         }
 
-        const leave = () => {
-          gsap.to(icon, {
-            y: 0,
-            scale: 1,
-            duration: 0.34,
-            ease: 'power2.out',
-          })
-          gsap.to(rule, {
-            scaleX: 0.18,
-            duration: 0.42,
+        const handleLeave = () => {
+          gsap.to(word, {
+            x: 0,
+            duration: 0.45,
             ease: 'power3.out',
           })
+
+          if (icon) {
+            gsap.to(icon, {
+              rotate: 0,
+              scale: 1,
+              duration: 0.4,
+              ease: 'power3.out',
+            })
+          }
+
+          if (line) {
+            gsap.to(line, {
+              scaleX: 0,
+              duration: 0.4,
+              ease: 'power3.out',
+            })
+          }
         }
 
-        card.addEventListener('pointerenter', enter)
-        card.addEventListener('pointerleave', leave)
+        word.addEventListener('pointerenter', handleEnter)
+        word.addEventListener('pointerleave', handleLeave)
 
-        cleanups.push(() => {
-          card.removeEventListener('pointerenter', enter)
-          card.removeEventListener('pointerleave', leave)
-        })
+        return () => {
+          word.removeEventListener('pointerenter', handleEnter)
+          word.removeEventListener('pointerleave', handleLeave)
+        }
       })
 
       return () => {
         cleanups.forEach((cleanup) => cleanup())
+        mm.revert()
       }
     },
-    { scope: sectionRef },
+    {
+      scope: sectionRef,
+    },
   )
 
   return (
@@ -197,150 +397,324 @@ const SkillSection = () => {
       ref={sectionRef}
       id="skill"
       aria-labelledby="skills-title"
-      className="relative isolate overflow-hidden px-4 py-28 sm:px-6 sm:py-36 lg:px-8 lg:py-44"
+      className="relative isolate overflow-hidden border-y border-black/[0.08] text-black dark:border-white/[0.09] dark:text-white"
     >
-      <div
-        data-skill-orbit
-        aria-hidden="true"
-        className="pointer-events-none absolute right-[-8rem] top-24 hidden size-[24rem] rounded-full border border-black/[0.045] dark:border-white/[0.06] lg:block"
-      />
+      <div className="px-4 pb-20 pt-28 sm:px-6 sm:pb-24 sm:pt-36 lg:px-8 lg:pb-32 lg:pt-44">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeading
+            id="skills-title"
+            index="03 / 07"
+            eyebrow="Capabilities"
+            title="Tools are temporary. Craft is the constant."
+            description="A focused collection of technologies for turning visual direction, product logic, and thoughtful motion into complete digital experiences."
+          />
+        </div>
+      </div>
 
-      <div className="mx-auto max-w-7xl">
-        <SectionHeading
-          id="skills-title"
-          index="03 / 07"
-          eyebrow="Capabilities"
-          title="A focused stack for complete digital products."
-          description="From interface systems to backend logic, I choose tools for clarity, maintainability, and the experience they help create."
+      <div
+        ref={experienceRef}
+        className="relative mx-auto min-h-screen max-w-[1600px] px-4 sm:px-6 lg:px-8"
+      >
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-4 top-0 h-px bg-black/10 sm:inset-x-6 lg:inset-x-8 dark:bg-white/10"
         />
 
-        <div className="mt-14 grid gap-3 sm:mt-16 lg:mt-24 lg:grid-cols-3 lg:gap-4">
+        <div className="hidden min-h-screen grid-cols-[minmax(14rem,0.72fr)_minmax(0,1.8fr)] lg:grid">
+          <aside className="relative flex flex-col justify-between border-r border-black/10 py-16 pr-12 dark:border-white/10 xl:py-20 xl:pr-16">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-black/40 dark:text-white/40">
+                Technical index
+              </p>
+
+              <nav
+                className="mt-14 space-y-5"
+                aria-label="Technology disciplines"
+              >
+                {skillGroups.map((group) => (
+                  <div
+                    key={group.number}
+                    data-skill-nav
+                    className="flex items-center gap-4"
+                  >
+                    <span className="font-mono text-[10px] tracking-[0.16em] text-black/45 dark:text-white/45">
+                      {group.number}
+                    </span>
+
+                    <span className="text-sm font-medium tracking-[-0.025em]">
+                      {group.title}
+                    </span>
+                  </div>
+                ))}
+              </nav>
+            </div>
+
+            <div data-skill-meta>
+              <p className="max-w-[13rem] text-xs leading-5 text-black/45 dark:text-white/45">
+                Selected technologies used across design, development, and
+                production.
+              </p>
+
+              <div className="mt-7 flex items-end justify-between">
+                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-black/35 dark:text-white/35">
+                  Scroll to explore
+                </span>
+
+                <div className="relative h-12 w-14 overflow-hidden">
+                  {skillGroups.map((group) => (
+                    <span
+                      key={group.number}
+                      data-skill-counter
+                      className="absolute inset-0 flex items-center justify-end text-4xl font-medium tracking-[-0.08em]"
+                    >
+                      {group.number}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <div className="relative min-h-screen">
+            {skillGroups.map((group) => {
+              const GroupIcon = group.icon
+              const titleId = `skill-${group.number}-title`
+
+              return (
+                <article
+                  key={group.number}
+                  data-skill-chapter
+                  aria-labelledby={titleId}
+                  className="absolute inset-0 flex min-h-screen flex-col overflow-y-auto py-14 pl-12 pr-2 xl:py-16 xl:pl-20"
+                >
+                  <header
+                    data-skill-meta
+                    className="flex shrink-0 items-start justify-between gap-12"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="grid size-11 place-items-center rounded-full border border-black/15 dark:border-white/15">
+                        <GroupIcon
+                          className="size-[1.1rem] stroke-[1.4]"
+                          aria-hidden="true"
+                        />
+                      </div>
+
+                      <div>
+                        <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-black/40 dark:text-white/40">
+                          {group.kicker}
+                        </p>
+
+                        <p className="mt-1 text-xs text-black/55 dark:text-white/55">
+                          {group.metric}
+                        </p>
+                      </div>
+                    </div>
+
+                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-black/35 dark:text-white/35">
+                      {group.skills.length.toString().padStart(2, '0')} tools
+                    </span>
+                  </header>
+
+                  <div className="flex flex-1 items-center py-10 xl:py-12">
+                    <div className="w-full">
+                      <h3
+                        id={titleId}
+                        className="max-w-4xl text-[clamp(3.5rem,6.4vw,7.8rem)] font-medium leading-[0.82] tracking-[-0.085em]"
+                      >
+                        {group.title}
+                      </h3>
+
+                      <p className="mt-7 max-w-xl text-sm leading-6 text-black/52 dark:text-white/52 xl:text-base xl:leading-7">
+                        {group.description}
+                      </p>
+
+                      <ul
+                        className="mt-10 grid max-w-5xl grid-cols-2 border-t border-black/10 xl:mt-12 xl:grid-cols-3 dark:border-white/10"
+                        aria-label={`${group.title} technologies`}
+                      >
+                        {group.skills.map((skill, index) => {
+                          const SkillIcon = skill.icon
+
+                          return (
+                            <li
+                              key={skill.name}
+                              data-skill-word
+                              className={`
+                                group relative flex min-h-20 cursor-default items-center gap-4
+                                overflow-hidden border-b border-black/10 py-3 pr-5
+                                transition-colors duration-500 dark:border-white/10
+                                ${index % 2 === 0 ? 'border-r' : ''}
+                                ${
+                                  index % 3 !== 2
+                                    ? 'xl:border-r'
+                                    : 'xl:border-r-0'
+                                }
+                              `}
+                            >
+                              <div
+                                data-skill-line
+                                aria-hidden="true"
+                                className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-black dark:bg-white"
+                              />
+
+                              <div
+                                data-skill-icon
+                                className={`
+                                  grid size-9 shrink-0 place-items-center rounded-full border
+                                  transition-colors duration-500
+                                  ${
+                                    skill.emphasis
+                                      ? 'border-black bg-black text-white dark:border-white dark:bg-white dark:text-black'
+                                      : 'border-black/15 text-black/55 group-hover:border-black/30 group-hover:text-black dark:border-white/15 dark:text-white/55 dark:group-hover:border-white/30 dark:group-hover:text-white'
+                                  }
+                                `}
+                              >
+                                <SkillIcon
+                                  className="size-3.5 stroke-[1.5]"
+                                  aria-hidden="true"
+                                />
+                              </div>
+
+                              <span
+                                className={`
+                                  text-[clamp(1rem,1.35vw,1.25rem)] tracking-[-0.045em]
+                                  ${
+                                    skill.emphasis
+                                      ? 'font-semibold'
+                                      : 'font-medium text-black/65 dark:text-white/65'
+                                  }
+                                `}
+                              >
+                                {skill.name}
+                              </span>
+                            </li>
+                          )
+                        })}
+                      </ul>
+                    </div>
+                  </div>
+                </article>
+              )
+            })}
+          </div>
+        </div>
+
+        <div className="space-y-28 pb-28 pt-10 sm:space-y-36 sm:pb-36 lg:hidden">
           {skillGroups.map((group) => {
-            const Icon = group.icon
-            const titleId = `skill-${group.number}-title`
-            const descriptionId = `skill-${group.number}-description`
+            const GroupIcon = group.icon
+            const titleId = `mobile-skill-${group.number}-title`
 
             return (
               <article
-                key={group.title}
-                data-reveal
-                data-skill-card
+                key={group.number}
+                data-skill-chapter
                 aria-labelledby={titleId}
-                aria-describedby={descriptionId}
-                className="
-                  group relative flex min-h-[28rem] flex-col overflow-hidden rounded-[1.75rem]
-                  border border-black/[0.08] bg-[#f7f7f5]/80 p-5
-                  shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]
-                  transition-[transform,border-color,background-color,box-shadow] duration-500
-                  ease-[cubic-bezier(0.16,1,0.3,1)]
-                  hover:-translate-y-1 hover:border-black/[0.16] hover:bg-white
-                  hover:shadow-[0_28px_70px_-52px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.95)]
-                  sm:p-6
-                  lg:min-h-[31rem]
-                  dark:border-white/[0.1] dark:bg-white/[0.025] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]
-                  dark:hover:border-white/[0.18] dark:hover:bg-white/[0.045]
-                  dark:hover:shadow-[0_28px_70px_-52px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.06)]
-                "
               >
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-x-5 top-0 h-px bg-black/[0.08] dark:bg-white/[0.1]"
-                />
+                <header className="flex items-start justify-between border-t border-black/10 pt-5 dark:border-white/10">
+                  <div className="flex items-center gap-3">
+                    <GroupIcon
+                      className="size-4 stroke-[1.45]"
+                      aria-hidden="true"
+                    />
 
-                <div className="flex items-start justify-between gap-6">
-                  <div
-                    data-skill-card-icon
-                    className="
-                      grid size-12 place-items-center rounded-2xl border border-black/[0.1]
-                      bg-white text-black shadow-[0_10px_30px_-24px_rgba(0,0,0,0.55)]
-                      transition-colors duration-500 group-hover:border-black/[0.16]
-                      dark:border-white/[0.12] dark:bg-black dark:text-white
-                      dark:group-hover:border-white/[0.2]
-                    "
-                  >
-                    <Icon className="size-5 stroke-[1.45]" aria-hidden="true" />
-                  </div>
-
-                  <div className="text-right">
-                    <span className="block font-mono text-[10px] leading-none tracking-[0.18em] text-black/35 dark:text-white/35">
-                      {group.number}
-                    </span>
-                    <span className="mt-2 block text-[11px] font-medium tracking-[-0.01em] text-black/45 dark:text-white/45">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-black/45 dark:text-white/45">
                       {group.kicker}
                     </span>
                   </div>
-                </div>
 
-                <div className="mt-14 sm:mt-16">
-                  <div
-                    data-skill-rule
-                    aria-hidden="true"
-                    className="mb-6 h-px w-24 origin-left scale-x-[0.18] bg-black transition-colors dark:bg-white"
-                  />
+                  <span className="font-mono text-[10px] tracking-[0.16em] text-black/40 dark:text-white/40">
+                    {group.number}
+                  </span>
+                </header>
 
+                <div className="py-12 sm:py-16">
                   <h3
                     id={titleId}
-                    className="max-w-[13rem] text-2xl font-semibold leading-[0.98] tracking-[-0.055em] text-black sm:text-[1.7rem] dark:text-white"
+                    className="max-w-[11ch] text-[clamp(3.3rem,13vw,6.5rem)] font-medium leading-[0.84] tracking-[-0.08em]"
                   >
                     {group.title}
                   </h3>
 
-                  <p
-                    id={descriptionId}
-                    className="mt-4 max-w-[27rem] text-sm leading-6 text-black/52 dark:text-white/52"
-                  >
+                  <p className="mt-7 max-w-xl text-sm leading-6 text-black/52 dark:text-white/52 sm:text-base sm:leading-7">
                     {group.description}
                   </p>
-                </div>
 
-                <div className="mt-7 rounded-2xl border border-black/[0.07] bg-white/55 p-4 dark:border-white/[0.08] dark:bg-black/20">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-black/35 dark:text-white/35">
+                  <p className="mt-5 font-mono text-[9px] uppercase tracking-[0.18em] text-black/35 dark:text-white/35">
                     {group.metric}
                   </p>
 
                   <ul
-                    className="mt-4 grid grid-cols-2 gap-2"
+                    className="mt-10 border-t border-black/10 dark:border-white/10"
                     aria-label={`${group.title} technologies`}
                   >
-                    {group.skills.map((skill) => {
+                    {group.skills.map((skill, index) => {
                       const SkillIcon = skill.icon
 
                       return (
                         <li
                           key={skill.name}
-                          data-skill-chip
-                          className={`
-                            flex min-h-10 items-center gap-2 rounded-xl border px-2.5
-                            text-[12px] font-medium tracking-[-0.015em]
-                            transition-[border-color,background-color,color,transform] duration-300
-                            group-hover:translate-y-0
-                            ${
-                              skill.emphasis
-                                ? 'border-black/[0.12] bg-black text-white dark:border-white/[0.16] dark:bg-white dark:text-black'
-                                : 'border-black/[0.075] bg-white/70 text-black/58 group-hover:border-black/[0.12] group-hover:text-black dark:border-white/[0.085] dark:bg-white/[0.035] dark:text-white/58 dark:group-hover:border-white/[0.14] dark:group-hover:text-white'
-                            }
-                          `}
+                          data-skill-word
+                          className="group relative flex min-h-[4.75rem] items-center justify-between overflow-hidden border-b border-black/10 dark:border-white/10"
                         >
-                          <SkillIcon
-                            className="size-3.5 shrink-0 stroke-[1.55]"
+                          <div
+                            data-skill-line
                             aria-hidden="true"
+                            className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-black dark:bg-white"
                           />
-                          <span className="truncate">{skill.name}</span>
+
+                          <div className="flex items-center gap-4">
+                            <span className="w-5 font-mono text-[9px] text-black/30 dark:text-white/30">
+                              {(index + 1).toString().padStart(2, '0')}
+                            </span>
+
+                            <span
+                              className={`
+                                text-lg tracking-[-0.045em] sm:text-xl
+                                ${
+                                  skill.emphasis
+                                    ? 'font-semibold'
+                                    : 'font-medium text-black/65 dark:text-white/65'
+                                }
+                              `}
+                            >
+                              {skill.name}
+                            </span>
+                          </div>
+
+                          <div
+                            data-skill-icon
+                            className={`
+                              grid size-9 place-items-center rounded-full border
+                              ${
+                                skill.emphasis
+                                  ? 'border-black bg-black text-white dark:border-white dark:bg-white dark:text-black'
+                                  : 'border-black/15 text-black/50 dark:border-white/15 dark:text-white/50'
+                              }
+                            `}
+                          >
+                            <SkillIcon
+                              className="size-3.5 stroke-[1.5]"
+                              aria-hidden="true"
+                            />
+                          </div>
                         </li>
                       )
                     })}
                   </ul>
                 </div>
-
-                <div className="mt-auto pt-6">
-                  <div className="flex items-center justify-between border-t border-black/[0.07] pt-4 text-[10px] uppercase tracking-[0.16em] text-black/35 dark:border-white/[0.08] dark:text-white/35">
-                    <span>Selected stack</span>
-                    <span>{group.skills.length.toString().padStart(2, '0')}</span>
-                  </div>
-                </div>
               </article>
             )
           })}
+        </div>
+
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-4 bottom-0 hidden h-px overflow-hidden bg-black/10 sm:inset-x-6 lg:inset-x-8 lg:block dark:bg-white/10"
+        >
+          <div
+            ref={progressRef}
+            className="h-full origin-left scale-x-0 bg-black dark:bg-white"
+          />
         </div>
       </div>
     </section>

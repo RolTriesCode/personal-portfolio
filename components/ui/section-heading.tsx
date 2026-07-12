@@ -15,7 +15,7 @@ export function SectionHeading({
 }: SectionHeadingProps) {
   return (
     <header
-      data-reveal
+      data-reveal="heading"
       className="grid gap-5 border-t border-black/[0.1] pt-5 dark:border-white/[0.12] md:grid-cols-[0.7fr_1.3fr] md:gap-10"
     >
       <div className="flex items-start justify-between gap-5 md:block">

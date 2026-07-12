@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Bebas_Neue, Inter, Noto_Serif } from "next/font/google";
 import "./globals.css";
 import LenisScroll from "./lenisScroll";
+import LoadingScreen from "@/components/LoadingScreen";
 import { SmoothCursor } from "@/components/ui/smooth-cursor"
 import { ScrollProgress } from "@/components/ui/scroll-progress"
 const bebasNeue = Bebas_Neue({
@@ -35,6 +36,7 @@ export default function RootLayout({
       <body
         className={`${bebasNeue.variable} ${inter.variable} ${notoSerif.variable} antialiased scroll-smooth`}
       >
+        <LoadingScreen />
         <ScrollProgress />
 
 <div className="hidden lg:flex">

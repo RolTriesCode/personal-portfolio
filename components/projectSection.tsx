@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, useRef } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -20,10 +21,14 @@ function ProjectCard({
   project: Project
   index: number
 }) {
-  return (
+  const isExternal = /^https?:\/\//.test(project.link)
+  const linkClassName =
+    'group block rounded-[1.75rem] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black dark:focus-visible:outline-white md:cursor-none'
+
+  const card = (
     <article
       data-project-card
-      className="group border-t border-black/[0.1] pt-4 dark:border-white/[0.12]"
+      className="border-t border-black/[0.1] pt-4 dark:border-white/[0.12]"
     >
       <div
         data-project-meta
@@ -87,6 +92,30 @@ function ProjectCard({
         </div>
       </div>
     </article>
+  )
+
+  if (isExternal) {
+    return (
+      <a
+        href={project.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`View ${project.title} project (opens in a new tab)`}
+        className={linkClassName}
+      >
+        {card}
+      </a>
+    )
+  }
+
+  return (
+    <Link
+      href={project.link}
+      aria-label={`View ${project.title} project`}
+      className={linkClassName}
+    >
+      {card}
+    </Link>
   )
 }
 

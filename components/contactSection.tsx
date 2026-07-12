@@ -114,7 +114,8 @@ const ContactSection = () => {
 
         <div className="mt-16 grid overflow-hidden rounded-[2rem] border border-black/[0.1] dark:border-white/[0.12] lg:mt-24 lg:grid-cols-[0.8fr_1.2fr]">
           <div
-            data-reveal
+            data-reveal="card"
+            data-motion-hover="3"
             className="flex flex-col bg-neutral-950 p-6 text-white sm:p-9 lg:min-h-[40rem] lg:p-10 dark:bg-white dark:text-black"
           >
             <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-white/40 dark:text-black/40">
@@ -142,9 +143,14 @@ const ContactSection = () => {
               </div>
             </div>
 
-            <ul className="mt-10 flex flex-wrap gap-2" aria-label="Social profiles">
+            <ul
+              data-reveal-group
+              data-reveal-stagger="0.045"
+              className="mt-10 flex flex-wrap gap-2"
+              aria-label="Social profiles"
+            >
               {socialLinks.map(({ label, href, icon: Icon }) => (
-                <li key={label}>
+                <li key={label} data-reveal-item>
                   <a
                     href={href}
                     target="_blank"
@@ -159,7 +165,11 @@ const ContactSection = () => {
             </ul>
           </div>
 
-          <div data-reveal className="bg-white p-6 dark:bg-neutral-950 sm:p-9 lg:p-10">
+          <div
+            data-reveal="card"
+            data-motion-hover="3"
+            className="bg-white p-6 dark:bg-neutral-950 sm:p-9 lg:p-10"
+          >
             <div className="flex items-center justify-between border-b border-black/[0.1] pb-5 dark:border-white/[0.12]">
               <h3 className="text-lg font-semibold tracking-[-0.03em]">
                 Tell me about your project
@@ -169,8 +179,13 @@ const ContactSection = () => {
               </span>
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-8 space-y-6" noValidate>
-              <div>
+            <form
+              data-reveal-group
+              onSubmit={handleSubmit}
+              className="mt-8 space-y-6"
+              noValidate
+            >
+              <div data-reveal-item>
                 <label htmlFor="username" className="text-xs font-medium">
                   Name
                 </label>
@@ -187,7 +202,7 @@ const ContactSection = () => {
                 />
               </div>
 
-              <div>
+              <div data-reveal-item>
                 <label htmlFor="email" className="text-xs font-medium">
                   Email address
                 </label>
@@ -205,7 +220,7 @@ const ContactSection = () => {
                 />
               </div>
 
-              <div>
+              <div data-reveal-item>
                 <label htmlFor="message" className="text-xs font-medium">
                   Project details
                 </label>
@@ -221,7 +236,10 @@ const ContactSection = () => {
                 />
               </div>
 
-              <div className="flex flex-col gap-4 pt-2 sm:flex-row sm:items-center sm:justify-between">
+              <div
+                data-reveal-item
+                className="flex flex-col gap-4 pt-2 sm:flex-row sm:items-center sm:justify-between"
+              >
                 <p
                   role={error ? 'alert' : 'status'}
                   aria-live="polite"

@@ -33,7 +33,7 @@ const AboutSection = () => {
       ref={sectionRef}
       id="about"
       aria-labelledby="about-title"
-      className="px-4 py-28 sm:px-6 sm:py-36 lg:px-8 lg:py-44"
+      className="px-4 py-28 sm:px-6 sm:py-36 lg:px-8 lg:py-44 border-t-4 border-black dark:border-white"
     >
       <div className="mx-auto max-w-7xl">
         <SectionHeading
@@ -45,22 +45,24 @@ const AboutSection = () => {
         />
 
         <div className="mt-20 grid gap-14 md:grid-cols-[0.7fr_1.3fr] md:gap-10 lg:mt-28">
-          <div data-reveal className="md:sticky md:top-32 md:self-start">
-            <div className="flex size-12 items-center justify-center rounded-full border border-black/[0.12] dark:border-white/[0.14]">
-              <ArrowDownRight
-                className="size-5 stroke-[1.5]"
-                aria-hidden="true"
-              />
+          <div data-reveal="card" className="md:sticky md:top-32 md:self-start">
+            <div data-parallax="4">
+              <div className="flex size-12 items-center justify-center rounded-full border border-black/[0.12] dark:border-white/[0.14]">
+                <ArrowDownRight
+                  className="size-5 stroke-[1.5]"
+                  aria-hidden="true"
+                />
+              </div>
+              <p className="mt-5 max-w-xs text-xs leading-5 text-black/40 dark:text-white/40">
+                Full-stack developer and UI/UX designer based in Vigan City,
+                Philippines.
+              </p>
             </div>
-            <p className="mt-5 max-w-xs text-xs leading-5 text-black/40 dark:text-white/40">
-              Full-stack developer and UI/UX designer based in Vigan City,
-              Philippines.
-            </p>
           </div>
 
           <div>
             <p
-              data-reveal
+              data-reveal="heading"
               className="max-w-3xl text-pretty text-[clamp(1.7rem,3.4vw,3.35rem)] leading-[1.12] tracking-[-0.045em]"
             >
               I&apos;m Errol—a builder of interfaces who bridges the gap between
@@ -69,7 +71,7 @@ const AboutSection = () => {
             </p>
 
             <p
-              data-reveal
+              data-reveal="text"
               className="mt-8 max-w-2xl text-[15px] leading-7 text-black/50 dark:text-white/50"
             >
               With experience across frontend and backend technologies, I
@@ -78,11 +80,16 @@ const AboutSection = () => {
               always in service of the larger experience.
             </p>
 
-            <div className="mt-16 border-t border-black/[0.1] dark:border-white/[0.12]">
+            <div
+              data-reveal-group
+              data-reveal-stagger="0.1"
+              className="mt-16 border-t border-black/[0.1] dark:border-white/[0.12]"
+            >
               {principles.map((principle) => (
                 <article
                   key={principle.number}
-                  data-reveal
+                  data-reveal-item
+                  data-motion-hover="3"
                   className="group grid gap-3 border-b border-black/[0.1] py-6 transition-colors hover:bg-black/[0.02] dark:border-white/[0.12] dark:hover:bg-white/[0.025] sm:grid-cols-[4rem_0.75fr_1.25fr] sm:items-start sm:gap-6"
                 >
                   <span className="font-mono text-[10px] text-black/35 dark:text-white/35">

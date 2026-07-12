@@ -147,7 +147,7 @@ const CertiSection = () => {
             />
 
             <div
-              data-reveal
+              data-reveal="card"
               className="mt-8 flex items-end justify-between gap-8 border-b border-black/10 pb-4 dark:border-white/10 lg:mt-10"
             >
               <div className="flex items-center gap-2 text-xs text-black/45 dark:text-white/45">
@@ -175,7 +175,7 @@ const CertiSection = () => {
           </div>
 
           <div
-            data-reveal
+            data-reveal="image"
             tabIndex={0}
             aria-label="Certificate gallery. Swipe horizontally on smaller screens or scroll vertically on desktop to browse."
             className="
@@ -192,6 +192,8 @@ const CertiSection = () => {
           >
             <div
               ref={trackRef}
+              data-reveal-group
+              data-reveal-stagger="0.055"
               className="
                 flex w-max snap-x snap-mandatory gap-4
                 sm:gap-5
@@ -202,6 +204,7 @@ const CertiSection = () => {
               {certificates.map((certificate, index) => (
                 <article
                   key={certificate.id}
+                  data-reveal-item
                   className="
                     group relative flex w-[78vw] max-w-[21rem] shrink-0
                     snap-start flex-col overflow-hidden rounded-[1.25rem]
