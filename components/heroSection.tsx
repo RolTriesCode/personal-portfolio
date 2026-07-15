@@ -252,8 +252,8 @@ const HeroSection = () => {
               aria-label="Errol Tabangen"
               className="font-bebas relative z-10 w-full text-[clamp(6.75rem,19vw,17rem)] leading-[0.73] tracking-[-0.035em] text-black dark:text-white"
             >
-              <span className="block overflow-hidden">ERROL</span>
-              <span className="block overflow-hidden text-right">TABANGEN</span>
+              <span className="block overflow-hidden text-[400px]">ERROL</span>
+              <span className="block overflow-hidden text-right text-[400px]">TABANGEN</span>
             </h1>
 
             <div
@@ -266,8 +266,7 @@ const HeroSection = () => {
                 src={robot}
                 alt=""
                 priority
-                sizes="(max-width: 640px) 55vw, (max-width: 1024px) 42vw, 28vw"
-                className="h-auto w-full select-none object-contain drop-shadow-[0_24px_24px_rgba(0,0,0,0.16)] dark:drop-shadow-[0_24px_28px_rgba(0,0,0,0.55)]"
+                className="h-auto w-90 select-none translate-x-20 -translate-y-20  object-contain drop-shadow-[0_24px_24px_rgba(0,0,0,0.16)] dark:drop-shadow-[0_24px_28px_rgba(0,0,0,0.55)]"
               />
             </div>
           </div>
