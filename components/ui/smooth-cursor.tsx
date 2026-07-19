@@ -1,6 +1,6 @@
 "use client"
 
-import { FC, useEffect, useRef } from "react"
+import { FC, useEffect, useRef, useState } from "react"
 import { motion, useSpring } from "motion/react"
 
 interface Position {
@@ -95,6 +95,7 @@ export function SmoothCursor({
   const lastUpdateTime = useRef(Date.now())
   const previousAngle = useRef(0)
   const accumulatedRotation = useRef(0)
+  const [isDisabled, setIsDisabled] = useState(false)
 
   const cursorX = useSpring(0, springConfig)
   const cursorY = useSpring(0, springConfig)
@@ -110,6 +111,24 @@ export function SmoothCursor({
   })
 
   useEffect(() => {
+    const syncCursorState = () => {
+      setIsDisabled(document.body.dataset.customCursorDisabled === "true")
+    }
+
+    syncCursorState()
+    window.addEventListener("custom-cursor-state-change", syncCursorState)
+
+    return () => {
+      window.removeEventListener("custom-cursor-state-change", syncCursorState)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (isDisabled) {
+      document.body.style.cursor = "auto"
+      return
+    }
+
     let scaleTimeout: ReturnType<typeof setTimeout> | undefined
 
     const updateVelocity = (currentPos: Position) => {
@@ -177,7 +196,9 @@ export function SmoothCursor({
       if (rafId) cancelAnimationFrame(rafId)
       if (scaleTimeout) clearTimeout(scaleTimeout)
     }
-  }, [cursorX, cursorY, rotation, scale])
+  }, [cursorX, cursorY, isDisabled, rotation, scale])
+
+  if (isDisabled) return null
 
   return (
     <motion.div

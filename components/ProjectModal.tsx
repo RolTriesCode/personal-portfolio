@@ -61,6 +61,11 @@ export default function ProjectModal({
       body.style.paddingRight = `${scrollBarWidth}px`
     }
 
+    const previousCustomCursorDisabled = body.dataset.customCursorDisabled
+    body.dataset.customCursorDisabled = 'true'
+    body.style.cursor = 'auto'
+    window.dispatchEvent(new Event('custom-cursor-state-change'))
+
     const focusTimer = window.setTimeout(() => closeButtonRef.current?.focus(), 0)
 
     return () => {
@@ -68,6 +73,15 @@ export default function ProjectModal({
       html.style.overflow = previousStyles.htmlOverflow
       body.style.overflow = previousStyles.bodyOverflow
       body.style.paddingRight = previousStyles.bodyPaddingRight
+      body.style.cursor = 'auto'
+
+      if (previousCustomCursorDisabled === undefined) {
+        delete body.dataset.customCursorDisabled
+      } else {
+        body.dataset.customCursorDisabled = previousCustomCursorDisabled
+      }
+
+      window.dispatchEvent(new Event('custom-cursor-state-change'))
     }
   }, [project])
 
@@ -202,16 +216,15 @@ export default function ProjectModal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6 lg:p-10"
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget) closeModal()
-      }}
+      className="fixed inset-0 z-[9999] flex cursor-auto items-center justify-center p-3 pointer-events-none sm:p-6 lg:p-10"
     >
       <div
         ref={backdropRef}
-        className="absolute inset-0 bg-black/65 backdrop-blur-md dark:bg-black/75"
+        className="absolute inset-0 cursor-auto bg-black/65 backdrop-blur-md pointer-events-auto dark:bg-black/75"
         aria-hidden="true"
-        onMouseDown={closeModal}
+        onMouseDown={(event) => {
+          if (event.target === event.currentTarget) closeModal()
+        }}
       />
 
       <div
@@ -222,7 +235,7 @@ export default function ProjectModal({
         aria-labelledby="project-modal-title"
         aria-describedby="project-modal-description"
         tabIndex={-1}
-        className="relative max-h-[calc(100dvh-1.5rem)] w-full max-w-6xl overflow-y-auto overscroll-contain rounded-[1.75rem] border border-black/[0.1] bg-white shadow-[0_30px_100px_rgba(0,0,0,0.28)] outline-none dark:border-white/[0.12] dark:bg-neutral-950 sm:max-h-[calc(100dvh-3rem)] sm:rounded-[2rem] lg:max-h-[calc(100dvh-5rem)]"
+        className="relative z-10 max-h-[calc(100dvh-1.5rem)] w-full max-w-6xl cursor-auto overflow-y-auto overscroll-contain rounded-[1.75rem] border border-black/[0.1] bg-white shadow-[0_30px_100px_rgba(0,0,0,0.28)] outline-none pointer-events-auto dark:border-white/[0.12] dark:bg-neutral-950 sm:max-h-[calc(100dvh-3rem)] sm:rounded-[2rem] lg:max-h-[calc(100dvh-5rem)]"
         onMouseDown={(event) => event.stopPropagation()}
       >
         <div className="sticky top-0 z-20 flex items-center justify-between border-b border-black/[0.08] bg-white/90 px-5 py-4 backdrop-blur-xl dark:border-white/[0.1] dark:bg-neutral-950/90 sm:px-7">
@@ -234,7 +247,7 @@ export default function ProjectModal({
             type="button"
             onClick={closeModal}
             aria-label={`Close ${project.title} project details`}
-            className="grid size-10 place-items-center rounded-full border border-black/[0.09] text-black/55 transition-colors hover:bg-black hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black md:cursor-none dark:border-white/[0.12] dark:text-white/55 dark:hover:bg-white dark:hover:text-black dark:focus-visible:outline-white"
+            className="grid size-10 cursor-pointer place-items-center rounded-full border border-black/[0.09] text-black/55 transition-colors hover:bg-black hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black dark:border-white/[0.12] dark:text-white/55 dark:hover:bg-white dark:hover:text-black dark:focus-visible:outline-white"
           >
             <X className="size-4 stroke-[1.6]" aria-hidden="true" />
           </button>
@@ -263,7 +276,7 @@ export default function ProjectModal({
                     type="button"
                     onClick={showPreviousImage}
                     aria-label="Show previous screenshot"
-                    className="grid size-10 place-items-center rounded-full border border-white/20 bg-black/70 text-white backdrop-blur-md transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:cursor-none"
+                    className="grid size-10 cursor-pointer place-items-center rounded-full border border-white/20 bg-black/70 text-white backdrop-blur-md transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
                     <ArrowLeft className="size-4 stroke-[1.6]" aria-hidden="true" />
                   </button>
@@ -271,7 +284,7 @@ export default function ProjectModal({
                     type="button"
                     onClick={showNextImage}
                     aria-label="Show next screenshot"
-                    className="grid size-10 place-items-center rounded-full border border-white/20 bg-black/70 text-white backdrop-blur-md transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:cursor-none"
+                    className="grid size-10 cursor-pointer place-items-center rounded-full border border-white/20 bg-black/70 text-white backdrop-blur-md transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
                     <ArrowRight className="size-4 stroke-[1.6]" aria-hidden="true" />
                   </button>
@@ -292,7 +305,7 @@ export default function ProjectModal({
                     onClick={() => setActiveImage(index)}
                     aria-label={`Show screenshot ${index + 1}`}
                     aria-pressed={activeImage === index}
-                    className={`relative aspect-[16/10] overflow-hidden rounded-xl border transition-opacity focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black md:cursor-none dark:focus-visible:outline-white ${
+                    className={`relative aspect-[16/10] cursor-pointer overflow-hidden rounded-xl border transition-opacity focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black dark:focus-visible:outline-white ${
                       activeImage === index
                         ? 'border-black opacity-100 dark:border-white'
                         : 'border-black/[0.08] opacity-45 hover:opacity-75 dark:border-white/[0.1]'
@@ -352,9 +365,9 @@ export default function ProjectModal({
                   href={project.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-[3.25rem] w-full items-center justify-center gap-2 rounded-full bg-black px-6 text-sm font-medium text-white transition-transform hover:scale-[1.015] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black active:scale-[0.99] md:cursor-none dark:bg-white dark:text-black dark:focus-visible:outline-white"
+                  className="flex h-[3.25rem] w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-black px-6 text-sm font-medium text-white transition-transform hover:scale-[1.015] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black active:scale-[0.99] dark:bg-white dark:text-black dark:focus-visible:outline-white"
                 >
-                  Visit Website
+                  View Website
                   <ArrowUpRight className="size-4 stroke-[1.6]" aria-hidden="true" />
                   <span className="sr-only">(opens in a new tab)</span>
                 </a>
@@ -365,7 +378,7 @@ export default function ProjectModal({
                     disabled
                     className="flex h-[3.25rem] w-full cursor-not-allowed items-center justify-center rounded-full bg-black/[0.08] px-6 text-sm font-medium text-black/35 dark:bg-white/[0.09] dark:text-white/35"
                   >
-                    Visit Website
+                    View Website
                   </button>
                   <p className="mt-3 text-center text-xs text-black/40 dark:text-white/40">
                     Live demo coming soon.
