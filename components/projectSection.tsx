@@ -1,126 +1,108 @@
 'use client'
 
-import { useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-import { projects } from '@/lib/data'
+import { projects, type Project } from '@/lib/data'
+import ProjectModal from './ProjectModal'
 import { SectionHeading } from './ui/section-heading'
 import { useSectionReveal } from './ui/use-section-reveal'
 
 gsap.registerPlugin(ScrollTrigger)
 
-type Project = (typeof projects)[number]
-
 function ProjectCard({
   project,
   index,
+  onSelect,
 }: {
   project: Project
   index: number
+  onSelect: (project: Project) => void
 }) {
-  const isExternal = /^https?:\/\//.test(project.link)
-  const linkClassName =
-    'group block rounded-[1.75rem] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black dark:focus-visible:outline-white md:cursor-none'
-
-  const card = (
+  return (
     <article
       data-project-card
-      className="border-t border-black/[0.1] pt-4 dark:border-white/[0.12]"
+      className="group relative border-t border-black/[0.1] pt-4 dark:border-white/[0.12]"
     >
-      <div
-        data-project-meta
-        className="mb-4 flex items-center justify-between font-mono text-[9px] uppercase tracking-[0.14em] text-black/35 dark:text-white/35"
-      >
-        <span>Project {(index + 1).toString().padStart(2, '0')}</span>
-        <time>{project.year}</time>
-      </div>
+      <button
+        type="button"
+        onClick={() => onSelect(project)}
+        aria-label={`Open ${project.title} project details`}
+        aria-haspopup="dialog"
+        aria-controls="project-modal"
+        className="absolute inset-0 z-10 rounded-[1.75rem] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black md:cursor-none dark:focus-visible:outline-white"
+      />
 
-      <div
-        data-project-media
-        className="relative aspect-[4/3] overflow-hidden rounded-[1.5rem] border border-black/[0.08] bg-neutral-100 dark:border-white/[0.1] dark:bg-neutral-900 sm:rounded-[1.75rem]"
-      >
-        <div data-project-image className="absolute inset-0 scale-[1.08]">
-          <Image
-            src={project.src}
-            alt={`${project.title} project preview`}
-            fill
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.035]"
+        <div
+          data-project-meta
+          className="mb-4 flex items-center justify-between font-mono text-[9px] uppercase tracking-[0.14em] text-black/35 dark:text-white/35"
+        >
+          <span>Project {(index + 1).toString().padStart(2, '0')}</span>
+          <time>{project.year}</time>
+        </div>
+
+        <div
+          data-project-media
+          className="relative aspect-[4/3] overflow-hidden rounded-[1.5rem] border border-black/[0.08] bg-neutral-100 dark:border-white/[0.1] dark:bg-neutral-900 sm:rounded-[1.75rem]"
+        >
+          <div data-project-image className="absolute inset-0 scale-[1.08]">
+            <Image
+              src={project.src}
+              alt={`${project.title} project preview`}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.035]"
+            />
+          </div>
+
+          <div
+            className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-black/[0.04] dark:ring-white/[0.06]"
+            aria-hidden="true"
+          />
+
+          <div
+            className="pointer-events-none absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-black/[0.025] dark:group-hover:bg-white/[0.015]"
+            aria-hidden="true"
           />
         </div>
 
         <div
-          className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-black/[0.04] dark:ring-white/[0.06]"
-          aria-hidden="true"
-        />
+          data-project-content
+          className="grid gap-4 py-5 sm:grid-cols-[0.72fr_1.28fr] sm:gap-8 sm:py-6"
+        >
+          <h3 className="text-2xl font-semibold tracking-[-0.045em] sm:text-3xl">
+            {project.title}
+          </h3>
 
-        <div
-          className="pointer-events-none absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-black/[0.025] dark:group-hover:bg-white/[0.015]"
-          aria-hidden="true"
-        />
-      </div>
+          <div>
+            <p className="text-sm leading-6 text-black/50 dark:text-white/50">
+              {project.description}
+            </p>
 
-      <div
-        data-project-content
-        className="grid gap-4 py-5 sm:grid-cols-[0.72fr_1.28fr] sm:gap-8 sm:py-6"
-      >
-        <h3 className="text-2xl font-semibold tracking-[-0.045em] sm:text-3xl">
-          {project.title}
-        </h3>
-
-        <div>
-          <p className="text-sm leading-6 text-black/50 dark:text-white/50">
-            {project.description}
-          </p>
-
-          <ul
-            className="mt-4 flex flex-wrap gap-x-4 gap-y-2"
-            aria-label={`${project.title} technologies`}
-          >
-            {project.tech.map((technology) => (
-              <li
-                key={technology}
-                className="text-[10px] font-medium uppercase tracking-[0.12em] text-black/35 dark:text-white/35"
-              >
-                {technology}
-              </li>
-            ))}
-          </ul>
+            <ul
+              className="mt-4 flex flex-wrap gap-x-4 gap-y-2"
+              aria-label={`${project.title} technologies`}
+            >
+              {project.tech.map((technology) => (
+                <li
+                  key={technology}
+                  className="text-[10px] font-medium uppercase tracking-[0.12em] text-black/35 dark:text-white/35"
+                >
+                  {technology}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
-      </div>
     </article>
-  )
-
-  if (isExternal) {
-    return (
-      <a
-        href={project.link}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={`View ${project.title} project (opens in a new tab)`}
-        className={linkClassName}
-      >
-        {card}
-      </a>
-    )
-  }
-
-  return (
-    <Link
-      href={project.link}
-      aria-label={`View ${project.title} project`}
-      className={linkClassName}
-    >
-      {card}
-    </Link>
   )
 }
 
 const ProjectSection = () => {
   const sectionRef = useRef<HTMLElement>(null)
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
 
   useSectionReveal(sectionRef)
 
@@ -299,10 +281,16 @@ const ProjectSection = () => {
               key={project.title}
               project={project}
               index={index}
+              onSelect={setSelectedProject}
             />
           ))}
         </div>
       </div>
+      <ProjectModal
+        key={selectedProject?.title ?? 'closed-project-modal'}
+        project={selectedProject}
+        onClose={() => setSelectedProject(null)}
+      />
     </section>
   )
 }

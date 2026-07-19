@@ -1,240 +1,148 @@
 'use client'
 
-import { useGSAP } from '@gsap/react'
-import gsap from 'gsap'
-import { useRef, useState } from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { useEffect, useState } from 'react'
 
-const name = 'Errol'
+const greetings = [
+  'Hello',
+  'bonjour',
+  'Ciao',
+  'Olà',
+  'やあ',
+  'Hallå',
+  'Guten tag',
+  'ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ ਜੀ',
+]
 
+type Viewport = {
+  width: number
+  height: number
+}
+
+// Adapted from Skiper UI's Words preloader:
+// https://skiper-ui.com/v1/skiper8
 export default function LoadingScreen() {
   const [isVisible, setIsVisible] = useState(true)
-  const overlayRef = useRef<HTMLDivElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
-  const lineRef = useRef<HTMLDivElement>(null)
-  const counterRef = useRef<HTMLSpanElement>(null)
-  const finishedRef = useRef(false)
+  const [hasExited, setHasExited] = useState(false)
+  const [wordIndex, setWordIndex] = useState(0)
+  const [viewport, setViewport] = useState<Viewport>({ width: 0, height: 0 })
+  const shouldReduceMotion = useReducedMotion()
 
-  useGSAP(
-    () => {
-      const overlay = overlayRef.current
-      const content = contentRef.current
-      const line = lineRef.current
-      const counter = counterRef.current
+  useEffect(() => {
+    const updateViewport = () => {
+      setViewport({ width: window.innerWidth, height: window.innerHeight })
+    }
 
-      if (!isVisible || !overlay || !content || !line || !counter) return
+    updateViewport()
+    window.addEventListener('resize', updateViewport)
 
-      const root = document.documentElement
-      const body = document.body
-      const previousOverflow = root.style.overflow
-      const previousBodyOverflow = body.style.overflow
-      const previousBodyPaddingRight = body.style.paddingRight
-      const previousBodyTouchAction = body.style.touchAction
-      const scrollbarGap = window.innerWidth - root.clientWidth
-      const reducedMotion = window.matchMedia(
-        '(prefers-reduced-motion: reduce)',
-      ).matches
-      const timers: number[] = []
-      const progressState = { value: 0 }
+    return () => window.removeEventListener('resize', updateViewport)
+  }, [])
 
-      root.style.overflow = 'hidden'
-      body.style.overflow = 'hidden'
-      body.style.touchAction = 'none'
+  useEffect(() => {
+    if (hasExited) return
 
-      if (scrollbarGap > 0) {
-        body.style.paddingRight = `${scrollbarGap}px`
-      }
+    const root = document.documentElement
+    const body = document.body
+    const previousRootOverflow = root.style.overflow
+    const previousBodyOverflow = body.style.overflow
+    const previousBodyPaddingRight = body.style.paddingRight
+    const previousBodyTouchAction = body.style.touchAction
+    const scrollbarGap = window.innerWidth - root.clientWidth
 
-      const chars = gsap.utils.toArray<HTMLElement>(
-        '[data-loader-char]',
-        overlay,
-      )
-      const details = gsap.utils.toArray<HTMLElement>(
-        '[data-loader-detail]',
-        overlay,
-      )
+    root.style.overflow = 'hidden'
+    body.style.overflow = 'hidden'
+    body.style.touchAction = 'none'
 
-      const exitLoader = () => {
-        if (finishedRef.current) return
-        finishedRef.current = true
+    if (scrollbarGap > 0) {
+      body.style.paddingRight = `${scrollbarGap}px`
+    }
 
-        gsap.to(progressState, {
-          value: 100,
-          duration: reducedMotion ? 0.08 : 0.22,
-          ease: 'power2.out',
-          onUpdate: () => {
-            const value = Math.round(progressState.value)
-            counter.textContent = `${value}%`
-            counter.setAttribute('aria-valuenow', value.toString())
-            gsap.set(line, { scaleX: value / 100 })
-          },
-        })
+    return () => {
+      root.style.overflow = previousRootOverflow
+      body.style.overflow = previousBodyOverflow
+      body.style.paddingRight = previousBodyPaddingRight
+      body.style.touchAction = previousBodyTouchAction
+    }
+  }, [hasExited])
 
-        gsap
-          .timeline({
-            defaults: { ease: 'power3.inOut' },
-            onComplete: () => setIsVisible(false),
-          })
-          .to(content, {
-            autoAlpha: 0,
-            y: reducedMotion ? 0 : -10,
-            duration: reducedMotion ? 0.12 : 0.32,
-          })
-          .to(
-            overlay,
-            {
-              autoAlpha: 0,
-              duration: reducedMotion ? 0.18 : 0.58,
-            },
-            reducedMotion ? 0 : 0.08,
-          )
-      }
+  useEffect(() => {
+    if (!isVisible || shouldReduceMotion || wordIndex === greetings.length - 1) {
+      return
+    }
 
-      if (reducedMotion) {
-        gsap.set([content, line, chars, details], { autoAlpha: 1 })
-        gsap.set(line, {
-          scaleX: 1,
-          transformOrigin: 'left center',
-        })
-        progressState.value = 100
-        counter.textContent = '100%'
-        counter.setAttribute('aria-valuenow', '100')
-      } else {
-        gsap
-          .timeline({ defaults: { ease: 'power3.out' } })
-          .set(overlay, { autoAlpha: 1 })
-          .set(line, { scaleX: 0, transformOrigin: 'left center' })
-          .fromTo(
-            counter,
-            { autoAlpha: 0, y: 8 },
-            { autoAlpha: 1, y: 0, duration: 0.42 },
-            0,
-          )
-          .to(
-            progressState,
-            {
-              value: 100,
-              duration: 1.12,
-              ease: 'power2.inOut',
-              onUpdate: () => {
-                const value = Math.round(progressState.value)
-                counter.textContent = `${value}%`
-                counter.setAttribute('aria-valuenow', value.toString())
-                gsap.set(line, { scaleX: value / 100 })
-              },
-            },
-            0,
-          )
-          .fromTo(
-            line,
-            { autoAlpha: 0 },
-            { autoAlpha: 1, duration: 0.28 },
-            0,
-          )
-          .fromTo(
-            chars,
-            { autoAlpha: 0, yPercent: 105 },
-            {
-              autoAlpha: 1,
-              yPercent: 0,
-              duration: 0.72,
-              stagger: 0.025,
-              ease: 'expo.out',
-            },
-            '-=0.44',
-          )
-          .fromTo(
-            details,
-            { autoAlpha: 0, y: 10 },
-            {
-              autoAlpha: 1,
-              y: 0,
-              duration: 0.52,
-              stagger: 0.06,
-            },
-            '-=0.32',
-          )
-      }
+    const delay = wordIndex === 0 ? 1000 : 150
+    const wordTimer = window.setTimeout(() => {
+      setWordIndex((current) => current + 1)
+    }, delay)
 
-      const startedAt = performance.now()
-      const minDuration = reducedMotion ? 240 : 980
-      const maxDuration = reducedMotion ? 520 : 1650
+    return () => window.clearTimeout(wordTimer)
+  }, [isVisible, shouldReduceMotion, wordIndex])
 
-      const completeAfterMinimum = () => {
-        const elapsed = performance.now() - startedAt
-        timers.push(window.setTimeout(exitLoader, Math.max(0, minDuration - elapsed)))
-      }
+  useEffect(() => {
+    const exitTimer = window.setTimeout(
+      () => setIsVisible(false),
+      shouldReduceMotion ? 350 : 2000,
+    )
 
-      if (document.readyState === 'complete') {
-        completeAfterMinimum()
-      } else {
-        window.addEventListener('load', completeAfterMinimum, { once: true })
-      }
+    return () => window.clearTimeout(exitTimer)
+  }, [shouldReduceMotion])
 
-      timers.push(window.setTimeout(exitLoader, maxDuration))
-
-      return () => {
-        window.removeEventListener('load', completeAfterMinimum)
-        timers.forEach((timer) => window.clearTimeout(timer))
-        root.style.overflow = previousOverflow
-        body.style.overflow = previousBodyOverflow
-        body.style.paddingRight = previousBodyPaddingRight
-        body.style.touchAction = previousBodyTouchAction
-        gsap.killTweensOf([overlay, content, line, counter, chars, details, progressState])
-      }
-    },
-    { dependencies: [isVisible] },
-  )
-
-  if (!isVisible) return null
+  const initialCurve = `M0 0 L${viewport.width} 0 L${viewport.width} ${viewport.height} Q${viewport.width / 2} ${viewport.height + 300} 0 ${viewport.height} L0 0`
+  const flatCurve = `M0 0 L${viewport.width} 0 L${viewport.width} ${viewport.height} Q${viewport.width / 2} ${viewport.height} 0 ${viewport.height} L0 0`
 
   return (
-    <div
-      ref={overlayRef}
-      role="status"
-      aria-live="polite"
-      aria-label="Loading Errol Tabangen portfolio"
-      className="fixed inset-0 z-[120] grid min-h-svh place-items-center bg-background text-foreground"
-    >
-      <div
-        ref={contentRef}
-        className="flex w-[min(84vw,34rem)] flex-col items-center text-center"
-      >
-        <div className="mb-6 h-px w-full overflow-hidden bg-black/10 dark:bg-white/10">
-          <div ref={lineRef} className="h-full w-full bg-black dark:bg-white" />
-        </div>
-
-        <p className="sr-only">Loading portfolio</p>
-
-        <div
-          className="font-bebas overflow-hidden text-[clamp(4rem,14vw,8.5rem)] leading-[0.78] tracking-[-0.03em]"
-          aria-hidden="true"
+    <AnimatePresence mode="wait" onExitComplete={() => setHasExited(true)}>
+      {isVisible && (
+        <motion.div
+          key="words-preloader"
+          role="status"
+          aria-live="polite"
+          aria-label="Loading Errol Tabangen portfolio"
+          initial={{ top: 0 }}
+          exit={{
+            top: shouldReduceMotion ? 0 : '-100svh',
+            opacity: shouldReduceMotion ? 0 : 1,
+            transition: {
+              duration: shouldReduceMotion ? 0.15 : 0.8,
+              ease: [0.76, 0, 0.24, 1],
+              delay: shouldReduceMotion ? 0 : 0.2,
+            },
+          }}
+          className="fixed inset-0 z-[120] flex h-svh w-full items-center justify-center bg-white text-black"
         >
-          {name.split('').map((char, index) => (
-            <span
-              key={`${char}-${index}`}
-              data-loader-char
-              className="inline-block"
-            >
-              {char === ' ' ? '\u00a0' : char}
-            </span>
-          ))}
-        </div>
+          {viewport.width > 0 && (
+            <>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.75 }}
+                transition={{ duration: shouldReduceMotion ? 0.1 : 1, delay: 0.2 }}
+                className="absolute z-10 max-w-[90vw] text-center text-5xl font-semibold tracking-tighter md:text-6xl"
+              >
+                <span>{shouldReduceMotion ? greetings.at(-1) : greetings[wordIndex]}</span>
+              </motion.p>
 
-        <div className="mt-6 flex w-full items-center justify-between gap-6 text-[10px] font-medium uppercase tracking-[0.18em] text-black/45 dark:text-white/45">
-          <span data-loader-detail>Portfolio</span>
-          <span
-            ref={counterRef}
-            role="progressbar"
-            aria-label="Loading progress"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={0}
-            className="min-w-10 text-right font-mono tabular-nums"
-          >
-            0%
-          </span>
-        </div>
-      </div>
-    </div>
+              <svg
+                aria-hidden="true"
+                className="absolute top-0 h-[calc(100%+300px)] w-full"
+              >
+                <motion.path
+                  initial={{ d: initialCurve }}
+                  exit={{
+                    d: flatCurve,
+                    transition: {
+                      duration: shouldReduceMotion ? 0.1 : 0.7,
+                      ease: [0.76, 0, 0.24, 1],
+                      delay: shouldReduceMotion ? 0 : 0.3,
+                    },
+                  }}
+                  className="fill-white shadow-[0_0_10px_#fff]"
+                />
+              </svg>
+            </>
+          )}
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }

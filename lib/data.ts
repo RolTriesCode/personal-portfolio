@@ -5,8 +5,25 @@ import mojita from '@/public/mojita.jpg'
 import flameAble from '@/public/flameAble.png'
 import nexum from '@/public/nexum.png'
 import axiom from '@/public/axiom.png'
+import type { StaticImageData } from 'next/image'
 
-export const projects = [
+export interface Project {
+    src: StaticImageData
+    title: string
+    description: string
+    tech: string[]
+    year: string
+    link?: string
+    gallery: Array<string | StaticImageData>
+}
+
+const sampleGallery = [
+    '/projects/sample-1.png',
+    '/projects/sample-2.png',
+    '/projects/sample-3.png',
+]
+
+export const projects: Project[] = [
 
 
     {
@@ -15,7 +32,8 @@ export const projects = [
         description: "Nexum is the orchestration layer for autonomous AI agents — reasoning through ambiguity, coordinating across your stack, and shipping real outcomes without waiting on a human in the loop.",
         tech: ["Next.js", "GSAP", "Tailwind CSS", "Lenis"],
         year: "2026",
-        link: "https://nexus-the-ai-saas.vercel.app//"
+        link: "https://nexus-the-ai-saas.vercel.app//",
+        gallery: sampleGallery,
     },
     {
         src: axiom,
@@ -23,7 +41,8 @@ export const projects = [
         description: "Axiom brings depth, light, and motion to every interface — a design system built for the next dimension of the web.",
         tech: ["Next.js", "GSAP", "Tailwind CSS", "Lenis"],
         year: "2026",
-        link: "https://axiom-kappa-sage.vercel.app/"
+        link: "https://axiom-kappa-sage.vercel.app/",
+        gallery: sampleGallery,
     },
     {
         src: vigEnture,
@@ -31,7 +50,8 @@ export const projects = [
         description: "A comprehensive travel and adventure tracking platform designed for modern explorers. Features real-time tracking and community sharing.",
         tech: ["Next.js", "React", "Tailwind CSS", "Firebase"],
         year: "2025",
-        link: "https://example.com/projects/vigenture"
+        link: "https://example.com/projects/vigenture",
+        gallery: sampleGallery,
     },
     {
         src: ignis,
@@ -39,7 +59,8 @@ export const projects = [
         description: "An innovative web application focused on fire safety management and reporting. Utilizes advanced data visualization for hazard assessment.",
         tech: ["Next.js", "Tailwind CSS", "Redix", "CodeRabbit"],
         year: "2025",
-        link: "https://example.com/projects/ignis"
+        link: "https://example.com/projects/ignis",
+        gallery: sampleGallery,
     },
     {
         src: mojita,
@@ -47,7 +68,8 @@ export const projects = [
         description: "A refreshing lifestyle application that offers a curated collection of drink recipes and social features for cocktail enthusiasts.",
         tech: ["Next.js", "Tailwind CSS", "GSAP"],
         year: "2025",
-        link: "https://example.com/projects/mojita"
+        link: "https://example.com/projects/mojita",
+        gallery: sampleGallery,
     },
     {
         src: flameAble,
@@ -55,7 +77,8 @@ export const projects = [
         description: "A creative digital canvas for flame-themed art and design, allowing users to create stunning visual effects with simple interactions.",
         tech: ["Canvas API", "JavaScript", "GSAP"],
         year: "2025",
-        link: "https://example.com/projects/flameable"
+        link: "https://example.com/projects/flameable",
+        gallery: sampleGallery,
     }
 ];
 
