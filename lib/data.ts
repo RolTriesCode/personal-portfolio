@@ -79,7 +79,26 @@ export const projects: Project[] = [
         year: "2025",
         link: "https://example.com/projects/flameable",
         gallery: sampleGallery,
+    },
+    {
+        src: flameAble,
+        title: "Blogify",
+        description: "A creative digital canvas for flame-themed art and design, allowing users to create stunning visual effects with simple interactions.",
+        tech: ["Canvas API", "JavaScript", "GSAP"],
+        year: "2025",
+        link: "https://example.com/projects/flameable",
+        gallery: sampleGallery,
+    },
+    {
+        src: flameAble,
+        title: "Kova",
+        description: "A creative digital canvas for flame-themed art and design, allowing users to create stunning visual effects with simple interactions.",
+        tech: ["Canvas API", "JavaScript", "GSAP"],
+        year: "2025",
+        link: "https://example.com/projects/flameable",
+        gallery: sampleGallery,
     }
+
 ];
 
 export const resumeData = {
